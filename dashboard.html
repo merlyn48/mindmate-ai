@@ -258,6 +258,7 @@
       <nav class="nav-main" aria-label="Main navigation">
         <a href="dashboard.html">Dashboard</a>
         <a href="index.html">Chat</a>
+        <a href="journal.html">Journal</a>
       </nav>
       <nav class="nav-secondary" aria-label="Account navigation">
         <a href="profile.html">Profile</a>
@@ -294,6 +295,13 @@
         <p id="moodResult" aria-live="polite"></p>
       </section>
       <br>
+      <!-- 📝 JOURNAL PREVIEW -->
+      <section class="mood-trend-section">
+        <h3>📝 Today’s Journal</h3>
+        <p class="subtitle">Your latest reflection</p>
+
+        <div id="journalPreview">Loading...</div>
+      </section>
       <!-- WELLNESS SCORE + 7-DAY TREND CHART -->
       <section class="mood-trend-section" aria-labelledby="trendHeading">
         <h3 id="trendHeading">Your Wellness Trend</h3>
@@ -346,6 +354,12 @@
             aria-label="Sleep Support">
             <h4>🌙 Sleep Support</h4>
             <p>Relax your thoughts and improve sleep habits.</p>
+          </div>
+          <div class="support-card" onclick="window.location.href='journal.html'"
+            onkeypress="if(event.key==='Enter')window.location.href='journal.html'" role="button" tabindex="0"
+            aria-label="Journal">
+            <h4>📝 Journal</h4>
+            <p>Write your thoughts and reflect on your day.</p>
           </div>
         </div>
       </section>
@@ -548,6 +562,56 @@
     }
 
     /* ── Init ───────────────────────────────────────────── */
+    /* ⬇️ Journal preview function */
+    async function loadJournalPreview() {
+      const container = document.getElementById("journalPreview");
+      if (!container) return;
+
+      try {
+        const user = firebase.auth().currentUser;
+        if (user && window._db) {
+          const snapshot = await _db
+            .collection("users")
+            .doc(user.uid)
+            .collection("journal")
+            .orderBy("createdAt", "desc")
+            .limit(1)
+            .get();
+
+          if (!snapshot.empty) {
+            const entry = snapshot.docs[0].data();
+            container.innerHTML = `
+          <div class="rec-card urgency-low">
+            <div class="rec-icon">📝</div>
+            <div class="rec-content">
+              <div class="rec-label">${entry.title || "Journal Entry"}</div>
+              <div class="rec-desc">${entry.text?.substring(0, 120) || ""}...</div>
+            </div>
+          </div>
+        `;
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Journal fetch failed, using local fallback");
+      }
+
+      const localEntries = JSON.parse(localStorage.getItem("mindmate_journal") || "[]");
+
+      if (localEntries.length) {
+        const entry = localEntries[localEntries.length - 1];
+
+        container.innerHTML = `
+      <div class="rec-card urgency-low">
+        <div class="rec-icon">📝</div>
+        <div class="rec-content">
+          <div class="rec-label">${entry.title || "Journal Entry"}</div>
+          <div class="rec-desc">${entry.text?.substring(0, 120) || ""}...</div>
+        </div>
+      </div>
+    `;
+      }
+    }
     window.addEventListener("DOMContentLoaded", () => {
       const mood = localStorage.getItem("mindmate_mood");
       const resultEl = document.getElementById("moodResult");
@@ -573,6 +637,9 @@
           renderRecommendations({ valence: last.v, arousal: last.a, dominance: last.d, score: last.score, dominant: last.dominant, hasCrisis: last.hasCrisis });
         }
       }
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) loadJournalPreview();
+      });
     });
 
     /* Mobile sidebar */
