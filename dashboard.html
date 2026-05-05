@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Dashboard — MindMate AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <style>
@@ -15,18 +18,21 @@
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
-      margin-top:20px;
+      margin-top: 20px;
     }
+
     .mood-trend-section h3 {
       margin-bottom: 6px;
       font-size: 15px;
       font-weight: 600;
     }
+
     .mood-trend-section .subtitle {
       font-size: 12px;
       color: var(--c-muted);
       margin-bottom: 20px;
     }
+
     .chart-wrap {
       position: relative;
       height: 140px;
@@ -34,6 +40,7 @@
       align-items: flex-end;
       gap: 8px;
     }
+
     .chart-bar-group {
       flex: 1;
       display: flex;
@@ -41,32 +48,46 @@
       align-items: center;
       gap: 4px;
     }
+
     .chart-bar {
       width: 100%;
       border-radius: 6px 6px 0 0;
-      transition: height 0.5s cubic-bezier(.34,1.56,.64,1);
+      transition: height 0.5s cubic-bezier(.34, 1.56, .64, 1);
       min-height: 4px;
       position: relative;
     }
+
     .chart-bar.no-data {
       background: var(--c-border);
       opacity: 0.4;
       height: 4px !important;
     }
-    .chart-bar.score-high  { background: linear-gradient(180deg,#4ade80,#22c55e); }
-    .chart-bar.score-mid   { background: linear-gradient(180deg,#fbbf24,#f59e0b); }
-    .chart-bar.score-low   { background: linear-gradient(180deg,#f87171,#ef4444); }
+
+    .chart-bar.score-high {
+      background: linear-gradient(180deg, #4ade80, #22c55e);
+    }
+
+    .chart-bar.score-mid {
+      background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    }
+
+    .chart-bar.score-low {
+      background: linear-gradient(180deg, #f87171, #ef4444);
+    }
+
     .chart-label {
       font-size: 10px;
       color: var(--c-muted);
       font-family: var(--font-mono, 'DM Mono', monospace);
     }
+
     .chart-score {
       font-size: 10px;
       color: var(--c-muted);
       font-family: var(--font-mono, 'DM Mono', monospace);
       font-weight: 500;
     }
+
     .trend-badge {
       display: inline-flex;
       align-items: center;
@@ -77,9 +98,21 @@
       font-weight: 500;
       margin-top: 14px;
     }
-    .trend-badge.improving { background: #dcfce7; color: #15803d; }
-    .trend-badge.declining { background: #fee2e2; color: #b91c1c; }
-    .trend-badge.stable    { background: #f1f5f9; color: #64748b; }
+
+    .trend-badge.improving {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .trend-badge.declining {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .trend-badge.stable {
+      background: #f1f5f9;
+      color: #64748b;
+    }
 
     /* ── Recommendation Panel ──────────────────────────────── */
     .recs-section {
@@ -88,18 +121,21 @@
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
-      margin-top:24px;
+      margin-top: 24px;
     }
+
     .recs-section h3 {
       margin-bottom: 6px;
       font-size: 15px;
       font-weight: 600;
     }
+
     .recs-section .subtitle {
       font-size: 12px;
       color: var(--c-muted);
       margin-bottom: 16px;
     }
+
     .rec-card {
       display: flex;
       gap: 12px;
@@ -110,16 +146,57 @@
       border: 1px solid var(--c-border);
       transition: background 0.2s, border-color 0.2s;
     }
-    .rec-card:hover { background: var(--c-bg); border-color: var(--c-accent); }
-    .rec-card.urgency-critical { border-left: 3px solid #ef4444; background: #fff5f5; }
-    .rec-card.urgency-high     { border-left: 3px solid #f59e0b; }
-    .rec-card.urgency-medium   { border-left: 3px solid var(--c-accent, #7c6af7); }
-    .rec-card.urgency-low      { border-left: 3px solid #94a3b8; }
-    .rec-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
-    .rec-content { flex: 1; }
-    .rec-label { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-    .rec-desc  { font-size: 12px; color: var(--c-muted); line-height: 1.5; }
-    .rec-empty { font-size: 13px; color: var(--c-muted); text-align: center; padding: 20px 0; }
+
+    .rec-card:hover {
+      background: var(--c-bg);
+      border-color: var(--c-accent);
+    }
+
+    .rec-card.urgency-critical {
+      border-left: 3px solid #ef4444;
+      background: #fff5f5;
+    }
+
+    .rec-card.urgency-high {
+      border-left: 3px solid #f59e0b;
+    }
+
+    .rec-card.urgency-medium {
+      border-left: 3px solid var(--c-accent, #7c6af7);
+    }
+
+    .rec-card.urgency-low {
+      border-left: 3px solid #94a3b8;
+    }
+
+    .rec-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .rec-content {
+      flex: 1;
+    }
+
+    .rec-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .rec-desc {
+      font-size: 12px;
+      color: var(--c-muted);
+      line-height: 1.5;
+    }
+
+    .rec-empty {
+      font-size: 13px;
+      color: var(--c-muted);
+      text-align: center;
+      padding: 20px 0;
+    }
 
     /* ── Wellness Score Ring ───────────────────────────────── */
     .wellness-ring-wrap {
@@ -128,23 +205,28 @@
       gap: 20px;
       margin-bottom: 20px;
     }
+
     .wellness-ring {
       flex-shrink: 0;
     }
+
     .ring-text {
       font-size: 13px;
     }
+
     .ring-score {
       font-size: 26px;
       font-weight: 700;
       line-height: 1.1;
     }
+
     .ring-label {
       font-size: 11px;
       color: var(--c-muted);
     }
   </style>
 </head>
+
 <body>
 
   <!-- Login protection -->
@@ -204,10 +286,10 @@
       <section class="mood-section" aria-labelledby="moodHeading">
         <h3 id="moodHeading">How are you feeling today?</h3>
         <div class="mood-buttons" role="group" aria-label="Mood selection">
-          <button onclick="setMood('happy', this)"   aria-label="Happy">🙂</button>
-          <button onclick="setMood('okay', this)"    aria-label="Okay">😐</button>
+          <button onclick="setMood('happy', this)" aria-label="Happy">🙂</button>
+          <button onclick="setMood('okay', this)" aria-label="Okay">😐</button>
           <button onclick="setMood('stressed', this)" aria-label="Stressed">😟</button>
-          <button onclick="setMood('sad', this)"     aria-label="Sad">😔</button>
+          <button onclick="setMood('sad', this)" aria-label="Sad">😔</button>
         </div>
         <p id="moodResult" aria-live="polite"></p>
       </section>
@@ -219,12 +301,10 @@
 
         <div class="wellness-ring-wrap">
           <svg class="wellness-ring" width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
-            <circle cx="36" cy="36" r="28" fill="none" stroke="var(--c-border)" stroke-width="8"/>
-            <circle id="ringArc" cx="36" cy="36" r="28" fill="none"
-                    stroke="var(--c-accent, #7c6af7)" stroke-width="8"
-                    stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9"
-                    transform="rotate(-90 36 36)"
-                    style="transition: stroke-dashoffset 1s ease, stroke 0.5s"/>
+            <circle cx="36" cy="36" r="28" fill="none" stroke="var(--c-border)" stroke-width="8" />
+            <circle id="ringArc" cx="36" cy="36" r="28" fill="none" stroke="var(--c-accent, #7c6af7)" stroke-width="8"
+              stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" transform="rotate(-90 36 36)"
+              style="transition: stroke-dashoffset 1s ease, stroke 0.5s" />
           </svg>
           <div class="ring-text">
             <div class="ring-score" id="avgScoreText">—</div>
@@ -247,22 +327,23 @@
         <h3 id="supportHeading">How can MindMate support you today?</h3>
         <div class="support-grid">
           <div class="support-card" onclick="window.location.href='index.html?topic=new'" role="button" tabindex="0"
-               onkeypress="if(event.key==='Enter')window.location.href='index.html?topic=new'" aria-label="Talk to MindMate">
+            onkeypress="if(event.key==='Enter')window.location.href='index.html?topic=new'"
+            aria-label="Talk to MindMate">
             <h4>💬 Talk to MindMate</h4>
             <p>Start a supportive conversation and share what's on your mind.</p>
           </div>
           <div class="support-card" onclick="window.location.href='index.html?topic=stress'" role="button" tabindex="0"
-               aria-label="Manage Stress">
+            aria-label="Manage Stress">
             <h4>🧠 Manage Stress</h4>
             <p>Learn grounding techniques to calm your mind.</p>
           </div>
-          <div class="support-card" onclick="window.location.href='index.html?topic=motivation'" role="button" tabindex="0"
-               aria-label="Study Motivation">
+          <div class="support-card" onclick="window.location.href='index.html?topic=motivation'" role="button"
+            tabindex="0" aria-label="Study Motivation">
             <h4>📚 Study Motivation</h4>
             <p>Stay focused and productive when studying.</p>
           </div>
           <div class="support-card" onclick="window.location.href='index.html?topic=sleep'" role="button" tabindex="0"
-               aria-label="Sleep Support">
+            aria-label="Sleep Support">
             <h4>🌙 Sleep Support</h4>
             <p>Relax your thoughts and improve sleep habits.</p>
           </div>
@@ -282,9 +363,12 @@
       <section class="progress-section" aria-labelledby="progressHeading" style="display:none" id="legacyTracker">
         <h3 id="progressHeading">Your Well-being This Week</h3>
         <div class="week-tracker" role="img" aria-label="Weekly mood tracker">
-          <div class="day" id="day1"></div><div class="day" id="day2"></div>
-          <div class="day" id="day3"></div><div class="day" id="day4"></div>
-          <div class="day" id="day5"></div><div class="day" id="day6"></div>
+          <div class="day" id="day1"></div>
+          <div class="day" id="day2"></div>
+          <div class="day" id="day3"></div>
+          <div class="day" id="day4"></div>
+          <div class="day" id="day5"></div>
+          <div class="day" id="day6"></div>
           <div class="day" id="day7"></div>
         </div>
         <div class="week-labels" aria-hidden="true">
@@ -328,16 +412,30 @@
 
       localStorage.setItem("mindmate_mood", mood);
 
-      const today = (new Date().getDay() + 6) % 7;
+      const todayName = new Date().toLocaleDateString('en-IN', {
+        weekday: 'long',
+        timeZone: 'Asia/Kolkata'
+      });
+      const dayMap = {
+        Monday: 0,
+        Tuesday: 1,
+        Wednesday: 2,
+        Thursday: 3,
+        Friday: 4,
+        Saturday: 5,
+        Sunday: 6
+      };
+
+      const today = dayMap[todayName];
       const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
       moodWeek[today] = mood;
       localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
 
       const responses = {
-        happy:    "I'm glad you're feeling good today 😊",
-        okay:     "Thanks for checking in. I'm here if you want to talk.",
+        happy: "I'm glad you're feeling good today 😊",
+        okay: "Thanks for checking in. I'm here if you want to talk.",
         stressed: "I'm sorry you're feeling stressed. Maybe chatting could help.",
-        sad:      "That sounds tough. Remember you're not alone 💜"
+        sad: "That sounds tough. Remember you're not alone 💜"
       };
       const resultEl = document.getElementById("moodResult");
       if (resultEl) resultEl.textContent = responses[mood] || "";
@@ -361,7 +459,7 @@
       if (!chart) return;
 
       chart.innerHTML = "";
-      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const MAX_H = 120;
 
       scores.forEach((score, i) => {
@@ -436,7 +534,7 @@
 
         /* Split emoji from label text */
         const emojiMatch = rec.label.match(/^(\S+)\s+(.+)$/);
-        const icon  = emojiMatch ? emojiMatch[1] : "💡";
+        const icon = emojiMatch ? emojiMatch[1] : "💡";
         const label = emojiMatch ? emojiMatch[2] : rec.label;
 
         card.innerHTML = `
@@ -495,4 +593,5 @@
     });
   </script>
 </body>
+
 </html>
