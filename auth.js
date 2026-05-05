@@ -22,7 +22,7 @@ showToast("Please fill in all fields", "error"); return;
 if (name.length < 2) {
 showToast("Name must be at least 2 characters", "error"); return;
 }
-if (!/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(email)) {
+if (!/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(email)) {   // ✅ FIXED REGEX
 showToast("Please enter a valid email address", "error"); return;
 }
 if (password.length < 6) {
@@ -30,40 +30,46 @@ showToast("Password must be at least 6 characters", "error"); return;
 }
 
 try {
-/* 1 — Create Firebase Auth account */
 const cred = await _auth.createUserWithEmailAndPassword(email, password);
 
 ```
-/* 2 — Set display name */
 await cred.user.updateProfile({ displayName: name });
 
-/* 3 — Save user profile to Firestore */
 await _db.collection("users").doc(cred.user.uid).set({
   name,
   email,
   createdAt: Date.now(),
 });
 
-/* 4 — Store locally */
 localStorage.setItem("loggedInUser",  name);
 localStorage.setItem("loggedInEmail", email);
 localStorage.setItem("loggedInUID",   cred.user.uid);
 
-/* Optional: sync chats (keeps behavior same as login) */
-await syncChatsFromCloud(cred.user.uid, name);
+if (typeof syncChatsFromCloud === "function") {
+  await syncChatsFromCloud(cred.user.uid, name);
+}
 
 showToast("Account created! 🎉", "success");
 
-/* ✅ FIX: go directly to dashboard */
 window.location.href = "dashboard.html";
 ```
 
 } catch (err) {
 console.error("[MindMate Auth] Register error:", err);
-if (err.code === "auth/email-already-in-use")
-showToast("An account with this email already exists", "error");
-else
-showToast("Registration failed: " + err.message, "error");
+
+```
+const msg =
+  err && typeof err.message === "string" && err.message.length > 0
+    ? err.message
+    : "Something went wrong. Please try again.";
+
+if (err.code === "auth/email-already-in-use") {
+  showToast("An account with this email already exists", "error");
+} else {
+  showToast("Registration failed: " + msg, "error");
+}
+```
+
 }
 }
 
@@ -82,7 +88,6 @@ const cred = await _auth.signInWithEmailAndPassword(email, password);
 const user = cred.user;
 
 ```
-/* Fetch name from Firestore */
 const snap = await _db.collection("users").doc(user.uid).get();
 const name = snap.exists ? snap.data().name : (user.displayName || "User");
 
@@ -90,7 +95,6 @@ localStorage.setItem("loggedInUser",  name);
 localStorage.setItem("loggedInEmail", email);
 localStorage.setItem("loggedInUID",   user.uid);
 
-/* Sync cloud chats → localStorage */
 if (typeof syncChatsFromCloud === "function") {
   await syncChatsFromCloud(user.uid, name);
 }
@@ -102,10 +106,24 @@ setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
 
 } catch (err) {
 console.error("[MindMate Auth] Login error:", err);
-if (err.code === "auth/user-not-found" || err.code === "auth/invalid-credential" || err.code === "auth/wrong-password")
-showToast("Incorrect email or password", "error");
-else
-showToast("Login failed: " + err.message, "error");
+
+```
+const msg =
+  err && typeof err.message === "string" && err.message.length > 0
+    ? err.message
+    : "Something went wrong. Please try again.";
+
+if (
+  err.code === "auth/user-not-found" ||
+  err.code === "auth/invalid-credential" ||
+  err.code === "auth/wrong-password"
+) {
+  showToast("Incorrect email or password", "error");
+} else {
+  showToast("Login failed: " + msg, "error");
+}
+```
+
 }
 }
 
@@ -214,9 +232,9 @@ isRegister ? register() : login();
 
 /* ── EXPORTS ───────────────────────────────────────────────────── */
 
-window.logout            = logout;
-window.register          = register;
-window.login             = login;
-window.saveChatsToCloud  = saveChatsToCloud;
-window.startAutoSave     = startAutoSave;
+window.logout             = logout;
+window.register           = register;
+window.login              = login;
+window.saveChatsToCloud   = saveChatsToCloud;
+window.startAutoSave      = startAutoSave;
 window.syncChatsFromCloud = syncChatsFromCloud;
