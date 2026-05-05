@@ -426,24 +426,12 @@
 
       localStorage.setItem("mindmate_mood", mood);
 
-      const todayName = new Date().toLocaleDateString('en-IN', {
-        weekday: 'long',
-        timeZone: 'Asia/Kolkata'
-      });
-      const dayMap = {
-        Monday: 0,
-        Tuesday: 1,
-        Wednesday: 2,
-        Thursday: 3,
-        Friday: 4,
-        Saturday: 5,
-        Sunday: 6
-      };
+      const today = (new Date().getDay() + 6) % 7;
 
-      const today = dayMap[todayName];
-      const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
-      moodWeek[today] = mood;
-      localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
+const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
+moodWeek[today] = mood;
+
+localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
 
       const responses = {
         happy: "I'm glad you're feeling good today 😊",
@@ -473,7 +461,14 @@
       if (!chart) return;
 
       chart.innerHTML = "";
-      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
+
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+      days.forEach((day, index) => {
+        const mood = moodWeek[index];
+      // render mood here
+      });
       const MAX_H = 120;
 
       scores.forEach((score, i) => {
@@ -658,6 +653,33 @@
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof startAutoSave === "function") startAutoSave();
     });
+    async function loadTodayJournal() {
+  const uid = localStorage.getItem("loggedInUID");
+  const el = document.getElementById("journalPreview");
+
+  try {
+    const snap = await _db.collection("users")
+      .doc(uid)
+      .collection("journals")
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .get();
+
+    if (!snap.empty) {
+      const data = snap.docs[0].data();
+      el.innerText = `${data.mood || "🙂"} ${data.text.slice(0, 100)}...`;
+    } else {
+      el.innerText = "No journal yet ✍️";
+    }
+
+  } catch (err) {
+    console.error(err);
+    el.innerText = "Could not load journal";
+  }
+}
+window.onload = function () {
+  loadTodayJournal();
+};
   </script>
 </body>
 

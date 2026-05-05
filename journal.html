@@ -1,16 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Journal – MindMate AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
+    /* TOASTS */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--c-border);
+      box-shadow: var(--shadow-lg);
+      font-size: 13.5px;
+      opacity: 0;
+      transform: translateY(-10px) scale(0.96);
+      animation: toastIn 0.38s var(--ease-spring) forwards;
+      min-width: 220px;
+      max-width: 360px;
+    }
+
+    .toast.success {
+      border-left: 4px solid #22c55e;
+    }
+
+    .toast.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    .toast.info {
+      border-left: 4px solid var(--c-accent);
+    }
+
+    @keyframes toastIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    @keyframes toastOut {
+      to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95)
+      }
+    }
+
+    /* OTHER CSS*/
     body {
       font-family: 'DM Sans', sans-serif;
       background: linear-gradient(135deg, #f3f0ff, #e8f9f5);
       margin: 0;
       padding: 0;
+    }
+
+    .prompt {
+      margin-bottom: 8px;
+      color: #6b6b8a;
+      font-size: 14px;
+      text-align: center;
     }
 
     .container {
@@ -30,7 +94,7 @@
       height: 180px;
       padding: 14px;
       border-radius: 12px;
-      border: 1.5px solid rgba(124,110,230,0.3);
+      border: 1.5px solid rgba(124, 110, 230, 0.3);
       font-size: 14px;
       resize: none;
       outline: none;
@@ -42,7 +106,7 @@
       padding: 14px;
       border-radius: 12px;
       border: none;
-      background: linear-gradient(135deg,#7c6ee6,#9184ff);
+      background: linear-gradient(135deg, #7c6ee6, #9184ff);
       color: white;
       font-size: 15px;
       font-weight: 600;
@@ -51,11 +115,11 @@
     }
 
     .entry {
-      background: rgba(255,255,255,0.8);
+      background: rgba(255, 255, 255, 0.8);
       padding: 14px;
       border-radius: 12px;
       margin-bottom: 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
     }
 
     .entry h4 {
@@ -78,94 +142,254 @@
       text-decoration: none;
       font-weight: 600;
     }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .actions button {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .actions button:first-child {
+      background: #e0e7ff;
+      color: #4f46e5;
+    }
+
+    .actions button:last-child {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .confirm-box {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.confirm-box.hidden {
+  display: none;
+}
+
+.confirm-content {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.confirm-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+#confirmYes {
+  background: #ef4444;
+  color: white;
+}
+
+#confirmNo {
+  background: #e5e7eb;
+}
   </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>📝 Your Journal</h1>
+  <div class="container">
+    <h1>How are you feeling today?</h1>
+    <textarea id="journalInput" placeholder="Write your thoughts..."></textarea>
 
-  <textarea id="journalInput" placeholder="Write your thoughts..."></textarea>
-  <button onclick="saveJournal()">Save Entry</button>
+    <button onclick="saveJournal()">Save Entry</button>
 
-  <div id="entries"></div>
+    <div id="entries"></div>
 
-  <a class="back" href="dashboard.html">← Back to Dashboard</a>
-</div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <a class="back" href="dashboard.html">← Back to Dashboard</a>
+  </div>
 
-<script src="firebase-config.js"></script>
-<script src="toast.js"></script>
-<script src="auth.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<script>
-if (!localStorage.getItem("loggedInUser")) {
-  window.location.href = "login.html";
+  <script src="firebase-config.js"></script>
+  <script src="toast.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    async function saveJournal() {
+      const text = document.getElementById("journalInput").value.trim();
+      const uid = localStorage.getItem("loggedInUID");
+
+      if (!text) {
+        showToast("Write something first ✍️", "error");
+        return;
+      }
+
+      try {
+        const now = new Date();
+
+        await _db.collection("users")
+          .doc(uid)
+          .collection("journals")
+          .add({
+            text,
+            createdAt: Date.now(),
+            date: now.toLocaleDateString("en-CA"),
+            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            mood: localStorage.getItem("mindmate_mood") || "🙂"
+          });
+
+        showToast("Journal saved 💾", "success");
+        document.getElementById("journalInput").value = "";
+
+        loadJournals();
+
+      } catch (err) {
+        console.error(err);
+        showToast("Error saving journal", "error");
+      }
+    }
+    async function loadJournals() {
+      const uid = localStorage.getItem("loggedInUID");
+      const container = document.getElementById("entries");
+
+      container.innerHTML = "";
+
+      try {
+        const snap = await _db.collection("users")
+          .doc(uid)
+          .collection("journals")
+          .orderBy("createdAt", "desc")
+          .get();
+
+        snap.forEach(doc => {
+          const data = doc.data();
+          const id = doc.id; // 🔥 important
+
+          container.innerHTML += `
+    <div class="entry">
+      <h4>${data.mood || "🙂"} ${data.date} • ${data.time}</h4>
+      <p>${data.text}</p>
+
+      <div class="actions">
+        <button onclick="editJournal('${id}', \`${data.text}\`)">✏️ Edit</button>
+        <button onclick="deleteJournal('${id}')">🗑️ Delete</button>
+      </div>
+    </div>
+  `;
+        });
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "Could not load journals";
+      }
+    }
+    window.onload = function () {
+      document.getElementById("journalInput").focus();
+      loadJournals();
+    };
+    let deleteId = null;
+
+function deleteJournal(id) {
+  deleteId = id;
+  document.getElementById("confirmBox").classList.remove("hidden");
 }
 
-async function saveJournal() {
-  const text = document.getElementById("journalInput").value.trim();
+    document.getElementById("confirmYes").onclick = async () => {
   const uid = localStorage.getItem("loggedInUID");
-
-  if (!text) {
-    showToast("Write something first ✍️", "error");
-    return;
-  }
-
-  const date = new Date().toLocaleDateString("en-CA");
 
   try {
     await _db.collection("users")
       .doc(uid)
       .collection("journals")
-      .doc(date)
-      .set({
-        text,
-        createdAt: Date.now()
-      });
+      .doc(deleteId)
+      .delete();
 
-    showToast("Journal saved 💾", "success");
-    document.getElementById("journalInput").value = "";
-
+    showToast("Deleted 🗑️", "info");
     loadJournals();
 
   } catch (err) {
     console.error(err);
-    showToast("Error saving journal", "error");
+    showToast("Delete failed", "error");
   }
-}
 
-async function loadJournals() {
+  document.getElementById("confirmBox").classList.add("hidden");
+};
+
+document.getElementById("confirmNo").onclick = () => {
+  document.getElementById("confirmBox").classList.add("hidden");
+};
+    function editJournal(id, oldText) {
+      const newText = prompt("Edit your entry:", oldText);
+
+      if (!newText) return;
+
+      const uid = localStorage.getItem("loggedInUID");
+
+      _db.collection("users")
+        .doc(uid)
+        .collection("journals")
+        .doc(id)
+        .update({
+          text: newText
+        })
+        .then(() => {
+          showToast("Updated ✨", "success");
+          loadJournals();
+        })
+        .catch(err => {
+          console.error(err);
+          showToast("Update failed", "error");
+        });
+    }
+    document.getElementById("confirmYes").onclick = async () => {
   const uid = localStorage.getItem("loggedInUID");
 
-  const snap = await _db.collection("users")
-    .doc(uid)
-    .collection("journals")
-    .orderBy("createdAt", "desc")
-    .get();
+  
 
-  const container = document.getElementById("entries");
-  container.innerHTML = "";
+  document.getElementById("confirmBox").classList.add("hidden");
+};
 
-  snap.forEach(doc => {
-    const data = doc.data();
-
-    container.innerHTML += `
-      <div class="entry">
-        <h4>${doc.id}</h4>
-        <p>${data.text}</p>
-      </div>
-    `;
-  });
-}
-
-loadJournals();
-</script>
-
+document.getElementById("confirmNo").onclick = () => {
+  document.getElementById("confirmBox").classList.add("hidden");
+};
+  </script>
+  <div id="confirmBox" class="confirm-box hidden">
+  <div class="confirm-content">
+    <p>Delete this entry?</p>
+    <div class="confirm-actions">
+      <button id="confirmYes">Delete</button>
+      <button id="confirmNo">Cancel</button>
+    </div>
+  </div>
+</div>
+  <div class="toast-container" id="toastContainer"></div>
 </body>
+
 </html>

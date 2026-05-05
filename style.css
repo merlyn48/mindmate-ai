@@ -190,7 +190,7 @@ body.dark-mode .sidebar-audio-btn { color:#c4baff;border-color:rgba(156,140,255,
 .mood-trend-section,
 .support-section,
 .recs-section,
-.progress-section { max-width:860px; }
+.progress-section { max-width:1160px; }
 
 .dashboard-header h1 { font-size:32px;font-weight:600;letter-spacing:-0.025em;line-height:1.2;margin-bottom:6px; }
 .dashboard-header p { color:var(--c-muted);font-size:15px; }
@@ -235,7 +235,7 @@ body.dark-mode .sidebar-audio-btn { color:#c4baff;border-color:rgba(156,140,255,
 /* SUPPORT */
 .support-section { margin-top:46px; }
 .support-section h3 { font-size:16px;font-weight:500;margin-bottom:16px; }
-.support-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:16px; }
+.support-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:16px; }
 .support-card {
   background:var(--c-surface);padding:20px 18px;border-radius:var(--r-md);
   border:1px solid var(--c-border);box-shadow:var(--shadow-sm);
