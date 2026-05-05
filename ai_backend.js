@@ -314,7 +314,7 @@ const RecommendEngine = (() => {
       desc: "Close your eyes and slowly move attention from head to toes, noticing sensations without judgment.",
     },
     nutrition: {
-      label: "Check Your Basics", urgency: "low", tags: ["fatigue", "anger", "stress"],
+      label: "💜 Check Your Basics", urgency: "low", tags: ["fatigue", "anger", "stress"],
       desc: "Have you eaten and had water today? Low blood sugar quietly amplifies every negative emotion.",
     },
     /* Professional help — shown only as a last resort */
