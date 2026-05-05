@@ -91,7 +91,9 @@ localStorage.setItem("loggedInEmail", email);
 localStorage.setItem("loggedInUID",   user.uid);
 
 /* Sync cloud chats → localStorage */
-await syncChatsFromCloud(user.uid, name);
+if (typeof syncChatsFromCloud === "function") {
+  await syncChatsFromCloud(user.uid, name);
+}
 
 showToast("Welcome back, " + name + "!", "success");
 
@@ -217,3 +219,4 @@ window.register          = register;
 window.login             = login;
 window.saveChatsToCloud  = saveChatsToCloud;
 window.startAutoSave     = startAutoSave;
+window.syncChatsFromCloud = syncChatsFromCloud;
