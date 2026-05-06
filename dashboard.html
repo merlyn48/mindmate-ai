@@ -729,9 +729,7 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
   renderTrendChart();
 
   firebase.auth().onAuthStateChanged(user => {
-    if (user) {
       loadJournalPreview();
-    }
   });
 });
     /* Mobile sidebar */
