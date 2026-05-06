@@ -478,7 +478,7 @@
 
       localStorage.setItem("mindmate_mood", mood);
 
-      const today = (new Date().getDay() + 6) % 7;
+      const today = (const day = rawDay === 0 ? 6 : rawDay - 1; + 6) % 7;
 
 const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
 moodWeek[today] = mood;
