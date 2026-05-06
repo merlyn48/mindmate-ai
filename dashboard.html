@@ -610,14 +610,15 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
 
     /* ── Init ───────────────────────────────────────────── */
     /* ⬇️ Journal preview function */
-    async function loadJournalPreview() {
+    async function loadJournalPreview(user) {
   const container = document.getElementById("journalPreview");
   if (!container) return;
 
   try {
-    const user = firebase.auth().currentUser;
 
+    /* FIREBASE */
     if (user && window._db) {
+
       const snapshot = await _db
         .collection("users")
         .doc(user.uid)
@@ -627,6 +628,7 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
         .get();
 
       if (!snapshot.empty) {
+
         const entry = snapshot.docs[0].data();
 
         container.innerHTML = `
@@ -636,7 +638,7 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
               <span class="journal-emoji">📝</span>
 
               <span class="journal-date">
-                ${new Date().toLocaleDateString()}
+                ${entry.date || new Date().toLocaleDateString()}
               </span>
             </div>
 
@@ -654,16 +656,18 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
         return;
       }
     }
+
   } catch (err) {
-    console.warn("Journal fetch failed, using local fallback");
+    console.error("Journal preview failed:", err);
   }
 
-  /* Fallback → localStorage */
+  /* LOCAL STORAGE FALLBACK */
   const localEntries = JSON.parse(
     localStorage.getItem("mindmate_journal") || "[]"
   );
 
   if (localEntries.length) {
+
     const entry = localEntries[localEntries.length - 1];
 
     container.innerHTML = `
@@ -687,7 +691,9 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
 
       </div>
     `;
+
   } else {
+
     container.innerHTML = `
       <div class="journal-preview-card">
 
@@ -710,6 +716,7 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
       </div>
     `;
   }
+}
 }
     window.addEventListener("DOMContentLoaded", () => {
   const mood = localStorage.getItem("mindmate_mood");
