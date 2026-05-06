@@ -211,17 +211,215 @@
 #confirmNo {
   background: #e5e7eb;
 }
+    /* ── Journal Page Glow Background ───────────────── */
+
+body {
+  background:
+    radial-gradient(circle at top left, #efe7ff 0%, transparent 30%),
+    radial-gradient(circle at top right, #dff7ff 0%, transparent 30%),
+    linear-gradient(180deg, #f8f6ff 0%, #eef7f6 100%);
+  min-height: 100vh;
+}
+
+/* ── Main Container ───────────────── */
+
+.journal-container {
+  max-width: 760px;
+  margin: auto;
+  padding: 60px 20px;
+}
+
+/* ── Heading ───────────────── */
+
+.journal-title {
+  text-align: center;
+  font-size: 52px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #2d234d;
+  letter-spacing: -1px;
+}
+
+.journal-subtitle {
+  text-align: center;
+  color: #6f6a8b;
+  margin-bottom: 34px;
+  font-size: 15px;
+}
+
+/* ── Prompt Bubble ───────────────── */
+
+.daily-prompt {
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(124,106,247,0.12);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #5c5475;
+  text-align: center;
+}
+
+/* ── Textarea ───────────────── */
+
+.journal-input {
+  width: 100%;
+  min-height: 240px;
+  border: none;
+  outline: none;
+  resize: vertical;
+
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(20px);
+
+  border-radius: 24px;
+  padding: 24px;
+
+  font-size: 17px;
+  line-height: 1.8;
+
+  box-shadow:
+    0 10px 40px rgba(124,106,247,0.08);
+
+  transition: all 0.25s ease;
+}
+
+.journal-input:focus {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 50px rgba(124,106,247,0.12);
+}
+
+/* ── Save Button ───────────────── */
+
+.save-btn {
+  margin-top: 18px;
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  padding: 16px;
+
+  background: linear-gradient(135deg, #7c6af7, #9b8cff);
+
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 30px rgba(124,106,247,0.25);
+}
+
+/* ── Journal Entries ───────────────── */
+
+.entry-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(124,106,247,0.08);
+
+  border-radius: 24px;
+
+  padding: 22px;
+  margin-top: 24px;
+
+  transition: all 0.25s ease;
+}
+
+.entry-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 40px rgba(124,106,247,0.10);
+}
+
+/* ── Entry Header ───────────────── */
+
+.entry-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.entry-mood {
+  background: #ede9fe;
+  color: #6d28d9;
+
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.entry-date {
+  font-size: 12px;
+  color: #7c7a92;
+}
+
+/* ── Entry Text ───────────────── */
+
+.entry-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #372f4f;
+
+  margin-bottom: 18px;
+}
+
+/* ── Action Buttons ───────────────── */
+
+.entry-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.edit-btn,
+.delete-btn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: translateY(-1px);
+}
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>How are you feeling today?</h1>
-    <p class="prompt" id="dailyPrompt"></p>
-    <textarea id="journalInput" placeholder="Write your thoughts..."></textarea>
+  <div class="journal-container">
+    <h1 class="journal-title">How are you feeling today?</h1>
+<p class="journal-subtitle">Take a breath and write freely.</p>
+    <div class="daily-prompt" id="dailyPrompt"></div>
+    <textarea id="journalInput" class="journal-input" placeholder="Write your thoughts..."></textarea>
 
-    <button onclick="saveJournal()">Save Entry</button>
+<button class="save-btn">Save Entry</button>
 
     <div id="entries"></div>
 
@@ -316,15 +514,39 @@ window.onload = function () {
           const id = doc.id; // 🔥 important
 
           container.innerHTML += `
-    <div class="entry">
-      <h4>${data.mood || "🙂"} ${data.date} • ${data.time}</h4>
-      <p>${data.text}</p>
+    <div class="entry-card">
 
-      <div class="actions">
-        <button onclick="editJournal('${id}', \`${data.text}\`)">✏️ Edit</button>
-        <button onclick="deleteJournal('${id}')">🗑️ Delete</button>
-      </div>
+  <div class="entry-top">
+
+    <div class="entry-mood">
+      ${data.mood || "🙂"}
     </div>
+
+    <div class="entry-date">
+      ${data.date} • ${data.time}
+    </div>
+
+  </div>
+
+  <div class="entry-text">
+    ${data.text}
+  </div>
+
+  <div class="entry-actions">
+
+    <button class="edit-btn"
+      onclick="editJournal('${id}', \`${data.text}\`)">
+      ✏️ Edit
+    </button>
+
+    <button class="delete-btn"
+      onclick="deleteJournal('${id}')">
+      🗑 Delete
+    </button>
+
+  </div>
+
+</div>
   `;
         });
 
@@ -333,10 +555,6 @@ window.onload = function () {
         container.innerHTML = "Could not load journals";
       }
     }
-    window.onload = function () {
-      document.getElementById("journalInput").focus();
-      loadJournals();
-    };
     let deleteId = null;
 
 function deleteJournal(id) {
