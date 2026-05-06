@@ -101,8 +101,8 @@
       margin-bottom: 12px;
     }
 
-    button {
-      padding: 14px;
+button:not(.edit-btn):not(.delete-btn) {
+  padding: 14px;
       border-radius: 12px;
       border: none;
       background: linear-gradient(135deg, #7c6ee6, #9184ff);
@@ -113,27 +113,7 @@
       margin-bottom: 20px;
     }
 
-    .entry {
-      background: rgba(255, 255, 255, 0.8);
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-    }
-
-    .entry h4 {
-      margin: 0 0 6px;
-      color: #7c6ee6;
-      font-size: 13px;
-    }
-
-    .entry p {
-      margin: 0;
-      color: #333;
-      font-size: 14px;
-    }
-
-    .back {
+        .back {
       display: block;
       text-align: center;
       margin-top: 20px;
@@ -142,30 +122,7 @@
       font-weight: 600;
     }
 
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-    }
-
-    .actions button {
-      padding: 6px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .actions button:first-child {
-      background: #e0e7ff;
-      color: #4f46e5;
-    }
-
-    .actions button:last-child {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-    .confirm-box {
+      .confirm-box {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.4);
@@ -382,14 +339,11 @@ body {
 
 .edit-btn,
 .delete-btn {
-  flex: 1;
   border: none;
   border-radius: 14px;
-  padding: 12px;
-
+  padding: 10px 18px;
   font-weight: 600;
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
