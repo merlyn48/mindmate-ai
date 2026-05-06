@@ -478,12 +478,22 @@
 
       localStorage.setItem("mindmate_mood", mood);
 
-      const today = (const day = rawDay === 0 ? 6 : rawDay - 1; + 6) % 7;
+      const rawDay = new Date().getDay();
 
-const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
+/* Convert Sunday-first → Monday-first */
+const today = rawDay === 0 ? 6 : rawDay - 1;
+
+const moodWeek = safeParseJSON(
+  localStorage.getItem("mindmate_week_moods"),
+  {}
+);
+
 moodWeek[today] = mood;
 
-localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
+localStorage.setItem(
+  "mindmate_week_moods",
+  JSON.stringify(moodWeek)
+);
 
       const responses = {
         happy: "I'm glad you're feeling good today 😊",
@@ -717,7 +727,6 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
     `;
   }
 }
-}
     window.addEventListener("DOMContentLoaded", () => {
   const mood = localStorage.getItem("mindmate_mood");
   const resultEl = document.getElementById("moodResult");
@@ -729,7 +738,7 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
   renderTrendChart();
 
   firebase.auth().onAuthStateChanged(user => {
-      loadJournalPreview();
+      loadJournalPreview(user);
   });
 });
     /* Mobile sidebar */
