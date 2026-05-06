@@ -5,7 +5,7 @@
    Get your FREE key at: https://console.groq.com/keys
    Paste it below — no server/proxy needed for Groq!
    ───────────────────────────────────────────────────────────────── */
-const GROQ_ENDPOINT = "https://mindmate-ai.onrender.com/chat";
+const GROQ_ENDPOINT = "https://mindmateai.onrender.com/chat";
 const GROQ_MODEL    = "llama-3.3-70b-versatile"; // fast, free, high quality
 
 const _AI_HEADERS = {
