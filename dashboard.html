@@ -224,6 +224,58 @@
       font-size: 11px;
       color: var(--c-muted);
     }
+    /* ── Journal Preview ───────────────────────── */
+
+.journal-preview-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f7f4ff 100%);
+  border: 1px solid rgba(124, 106, 247, 0.12);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(124, 106, 247, 0.08);
+  transition: all 0.25s ease;
+}
+
+.journal-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(124, 106, 247, 0.12);
+}
+
+.journal-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.journal-emoji {
+  font-size: 22px;
+}
+
+.journal-date {
+  font-size: 11px;
+  color: var(--c-muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.journal-preview-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #433b63;
+  margin-bottom: 18px;
+  font-style: italic;
+}
+
+.journal-preview-link {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c6af7;
+  transition: opacity 0.2s ease;
+}
+
+.journal-preview-link:hover {
+  opacity: 0.7;
+}
   </style>
 </head>
 
@@ -559,84 +611,122 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
     /* ── Init ───────────────────────────────────────────── */
     /* ⬇️ Journal preview function */
     async function loadJournalPreview() {
-      const container = document.getElementById("journalPreview");
-      if (!container) return;
+  const container = document.getElementById("journalPreview");
+  if (!container) return;
 
-      try {
-        const user = firebase.auth().currentUser;
-        if (user && window._db) {
-          const snapshot = await _db
-            .collection("users")
-            .doc(user.uid)
-            .collection("journal")
-            .orderBy("createdAt", "desc")
-            .limit(1)
-            .get();
+  try {
+    const user = firebase.auth().currentUser;
 
-          if (!snapshot.empty) {
-            const entry = snapshot.docs[0].data();
-            container.innerHTML = `
-          <div class="rec-card urgency-low">
-            <div class="rec-icon">📝</div>
-            <div class="rec-content">
-              <div class="rec-label">${entry.title || "Journal Entry"}</div>
-              <div class="rec-desc">${entry.text?.substring(0, 120) || ""}...</div>
-            </div>
-          </div>
-        `;
-            return;
-          }
-        }
-      } catch (err) {
-        console.warn("Journal fetch failed, using local fallback");
-      }
+    if (user && window._db) {
+      const snapshot = await _db
+        .collection("users")
+        .doc(user.uid)
+        .collection("journal")
+        .orderBy("createdAt", "desc")
+        .limit(1)
+        .get();
 
-      const localEntries = JSON.parse(localStorage.getItem("mindmate_journal") || "[]");
-
-      if (localEntries.length) {
-        const entry = localEntries[localEntries.length - 1];
+      if (!snapshot.empty) {
+        const entry = snapshot.docs[0].data();
 
         container.innerHTML = `
-      <div class="rec-card urgency-low">
-        <div class="rec-icon">📝</div>
-        <div class="rec-content">
-          <div class="rec-label">${entry.title || "Journal Entry"}</div>
-          <div class="rec-desc">${entry.text?.substring(0, 120) || ""}...</div>
-        </div>
-      </div>
-    `;
+          <div class="journal-preview-card">
+
+            <div class="journal-preview-top">
+              <span class="journal-emoji">📝</span>
+
+              <span class="journal-date">
+                ${new Date().toLocaleDateString()}
+              </span>
+            </div>
+
+            <div class="journal-preview-text">
+              "${entry.text?.substring(0, 140) || "No journal text"}..."
+            </div>
+
+            <a href="journal.html" class="journal-preview-link">
+              Open Journal →
+            </a>
+
+          </div>
+        `;
+
+        return;
       }
     }
+  } catch (err) {
+    console.warn("Journal fetch failed, using local fallback");
+  }
+
+  /* Fallback → localStorage */
+  const localEntries = JSON.parse(
+    localStorage.getItem("mindmate_journal") || "[]"
+  );
+
+  if (localEntries.length) {
+    const entry = localEntries[localEntries.length - 1];
+
+    container.innerHTML = `
+      <div class="journal-preview-card">
+
+        <div class="journal-preview-top">
+          <span class="journal-emoji">📝</span>
+
+          <span class="journal-date">
+            ${new Date().toLocaleDateString()}
+          </span>
+        </div>
+
+        <div class="journal-preview-text">
+          "${entry.text?.substring(0, 140) || "No journal text"}..."
+        </div>
+
+        <a href="journal.html" class="journal-preview-link">
+          Open Journal →
+        </a>
+
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="journal-preview-card">
+
+        <div class="journal-preview-top">
+          <span class="journal-emoji">🌿</span>
+
+          <span class="journal-date">
+            No entries yet
+          </span>
+        </div>
+
+        <div class="journal-preview-text">
+          Start journaling to reflect on your thoughts and emotions.
+        </div>
+
+        <a href="journal.html" class="journal-preview-link">
+          Write First Entry →
+        </a>
+
+      </div>
+    `;
+  }
+}
     window.addEventListener("DOMContentLoaded", () => {
-      const mood = localStorage.getItem("mindmate_mood");
-      const resultEl = document.getElementById("moodResult");
-      if (mood && resultEl) resultEl.textContent = "Today's mood: " + mood;
+  const mood = localStorage.getItem("mindmate_mood");
+  const resultEl = document.getElementById("moodResult");
 
-      /* Restore selected mood button */
-      if (mood) {
-        document.querySelectorAll(".mood-buttons button").forEach(btn => {
-          if (btn.getAttribute("aria-label")?.toLowerCase() === mood) {
-            btn.classList.add("mood-selected");
-          }
-        });
-      }
+  if (mood && resultEl) {
+    resultEl.textContent = "Today's mood: " + mood;
+  }
 
-      /* Render chart and recs from historical data */
-      renderTrendChart();
+  renderTrendChart();
 
-      /* Show last-known mood recommendations if no mood set today */
-      if (window.MindMateBackend) {
-        const recent = window.MindMateBackend.MoodTracker.recent(3);
-        if (recent.length) {
-          const last = recent[recent.length - 1];
-          renderRecommendations({ valence: last.v, arousal: last.a, dominance: last.d, score: last.score, dominant: last.dominant, hasCrisis: last.hasCrisis });
-        }
-      }
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) loadJournalPreview();
-      });
-    });
-
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      loadJournalPreview();
+    }
+  });
+});
     /* Mobile sidebar */
     function openSidebar() {
       document.getElementById("sidebar").classList.add("sidebar-open");
@@ -653,33 +743,6 @@ localStorage.setItem("mindmate_week_moods", JSON.stringify(moodWeek));
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof startAutoSave === "function") startAutoSave();
     });
-    async function loadTodayJournal() {
-  const uid = localStorage.getItem("loggedInUID");
-  const el = document.getElementById("journalPreview");
-
-  try {
-    const snap = await _db.collection("users")
-      .doc(uid)
-      .collection("journals")
-      .orderBy("createdAt", "desc")
-      .limit(1)
-      .get();
-
-    if (!snap.empty) {
-      const data = snap.docs[0].data();
-      el.innerText = `${data.mood || "🙂"} ${data.text.slice(0, 100)}...`;
-    } else {
-      el.innerText = "No journal yet ✍️";
-    }
-
-  } catch (err) {
-    console.error(err);
-    el.innerText = "Could not load journal";
-  }
-}
-window.onload = function () {
-  loadTodayJournal();
-};
   </script>
 </body>
 
