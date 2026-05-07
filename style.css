@@ -589,13 +589,24 @@ textarea.input-style { min-height:120px;resize:vertical; }
    CALM PAGE
 ───────────────────────────────────── */
 .calm-card h1 {
-  font-size: 44px;
-  margin-bottom: 12px;
+  color: white;
+  font-size: 56px;
+  font-weight: 800;
 }
 
 .calm-card p {
-  opacity: 0.9;
-  margin-bottom: 40px;
+  color: rgba(255,255,255,0.82);
+  font-size: 18px;
+}
+
+.breathing-text {
+  color: rgba(255,255,255,0.9);
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.breathing-circle {
+  color: white;
 }
 
 .calm-instruction {
@@ -607,11 +618,19 @@ textarea.input-style { min-height:120px;resize:vertical; }
 /* ─────────────────────────────
    CALM PAGE FIXES
 ───────────────────────────── */
-
 .calm-page {
+  background:
+    linear-gradient(
+      135deg,
+      #6d5df6 0%,
+      #8b7dff 35%,
+      #b9e7ff 100%
+    );
+
+  min-height: 100vh;
+
   overflow-x: hidden;
 }
-
 .calm-bg {
   position: fixed;
   inset: 0;
@@ -646,15 +665,18 @@ textarea.input-style { min-height:120px;resize:vertical; }
 
   border-radius: 36px;
 
-  background: rgba(255,255,255,0.12);
+  background: rgba(95, 78, 194, 0.18);
 
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(18px);
 
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.18);
+
+  box-shadow:
+    0 10px 40px rgba(109,93,246,0.18);
 
   text-align: center;
 
-  color: white;
+  color: #ffffff;
 }
 
 .calm-buttons {
