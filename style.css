@@ -588,65 +588,6 @@ textarea.input-style { min-height:120px;resize:vertical; }
 /* ─────────────────────────────────────
    CALM PAGE
 ───────────────────────────────────── */
-
-.calm-page {
-  margin: 0;
-  min-height: 100vh;
-
-  overflow: hidden;
-
-  background:
-    linear-gradient(180deg,#7c6af7,#60a5fa);
-
-  font-family: 'DM Sans', sans-serif;
-}
-
-.calm-bg {
-   position: fixed;
-  inset: 0;
-
-  background:
-    radial-gradient(circle at top,
-    rgba(255,255,255,0.25),
-    transparent 40%);
-
-  pointer-events: none;
-  z-index: -1;
-}
-
-.calm-main {
-  min-height: 100vh;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-   position: relative;
-z-index: 2;
-  padding: 30px;
-}
-
-.calm-card {
-  position: relative;
-  z-index: 2;
-
-  width: 100%;
-  max-width: 520px;
-
-  padding: 50px 40px;
-
-  border-radius: 36px;
-
-  background: rgba(255,255,255,0.14);
-
-  backdrop-filter: blur(24px);
-
-  border: 1px solid rgba(255,255,255,0.25);
-
-  text-align: center;
-
-  color: white;
-}
-
 .calm-card h1 {
   font-size: 44px;
   margin-bottom: 12px;
@@ -657,40 +598,127 @@ z-index: 2;
   margin-bottom: 40px;
 }
 
-.breathing-circle {
-  width: 200px;
-  height: 200px;
-
-  margin: auto;
-
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  animation: breathe 8s infinite ease;
-}
-
 .calm-instruction {
   margin-top: 18px;
   color: #5b4fcf;
   font-weight: 600;
 }
 
+/* ─────────────────────────────
+   CALM PAGE FIXES
+───────────────────────────── */
+
+.calm-page {
+  overflow-x: hidden;
+}
+
+.calm-bg {
+  position: fixed;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at top,
+    rgba(255,255,255,0.18),
+    transparent 40%);
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+.calm-main {
+  position: relative;
+  z-index: 2;
+
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+}
+
+.calm-card {
+  width: 100%;
+  max-width: 560px;
+
+  padding: 50px 40px;
+
+  border-radius: 36px;
+
+  background: rgba(255,255,255,0.12);
+
+  backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  text-align: center;
+
+  color: white;
+}
+
+.calm-buttons {
+  display: flex;
+  gap: 14px;
+
+  justify-content: center;
+
+  margin-top: 30px;
+}
+
+.calm-buttons button {
+  border: none;
+
+  padding: 14px 20px;
+
+  border-radius: 16px;
+
+  background: white;
+
+  color: #6d5df6;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.breathing-circle {
+  width: 180px;
+  height: 180px;
+
+  margin: 40px auto;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(circle,
+    rgba(255,255,255,0.35),
+    rgba(255,255,255,0.1));
+
+  font-size: 24px;
+  font-weight: 700;
+
+  animation: breathe 8s infinite ease-in-out;
+}
+
 @keyframes breathe {
 
   0% {
-    transform: scale(0.9);
+    transform: scale(0.85);
   }
 
   50% {
-    transform: scale(1.2);
+    transform: scale(1.12);
   }
 
   100% {
-    transform: scale(0.9);
+    transform: scale(0.85);
   }
 }
-
 /* Journal Entries */
 
 .entry-card {
