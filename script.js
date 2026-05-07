@@ -1296,3 +1296,38 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+
+let uploadedFile = null;
+
+document
+  .getElementById("fileUpload")
+  .addEventListener("change", e => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    uploadedFile = file;
+
+    const preview =
+      document.getElementById("uploadPreview");
+
+    preview.innerHTML = "";
+
+    if (file.type.startsWith("image/")) {
+
+      const img =
+        document.createElement("img");
+
+      img.className = "preview-image";
+
+      img.src =
+        URL.createObjectURL(file);
+
+      preview.appendChild(img);
+    } else {
+
+      preview.innerHTML =
+        `<p>📄 ${file.name}</p>`;
+    }
+});
