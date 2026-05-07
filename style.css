@@ -840,3 +840,31 @@ textarea.input-style { min-height:120px;resize:vertical; }
 #soundSelector option {
   color: black;
 }
+
+.upload-btn {
+  cursor: pointer;
+
+  font-size: 22px;
+
+  padding: 10px;
+
+  color: var(--c-accent);
+
+  transition: 0.2s;
+}
+
+.upload-btn:hover {
+  transform: scale(1.1);
+}
+
+#uploadPreview {
+  margin-bottom: 12px;
+}
+
+.preview-image {
+  max-width: 180px;
+
+  border-radius: 16px;
+
+  margin-top: 10px;
+}
