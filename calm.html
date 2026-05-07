@@ -97,9 +97,15 @@
 
 </div>
 
-      <audio id="rainAudio" loop>
-        <source src="rain.mp3" type="audio/mpeg">
-      </audio>
+      <select id="soundSelector">
+        <audio id="rainAudio" loop>
+  <source src="rain.mp3" type="audio/mpeg">
+</audio>
+  <option value="rain.mp3">🌧 Rain</option>
+  <option value="forest.mp3">🌲 Forest</option>
+  <option value="ocean.mp3">🌊 Ocean</option>
+  <option value="piano.mp3">🎹 Piano</option>
+</select>
 
     </div>
 
@@ -162,19 +168,30 @@
 
   function toggleRain() {
 
-    const audio =
-      document.getElementById("rainAudio");
+  const audio =
+    document.getElementById("rainAudio");
 
-    if (audio.paused) {
+  const selector =
+    document.getElementById("soundSelector");
 
-      audio.play();
+  const selectedSound =
+    selector.value;
 
-    } else {
+  if (!audio.src.includes(selectedSound)) {
 
-      audio.pause();
-
-    }
+    audio.src = selectedSound;
   }
+
+  if (audio.paused) {
+
+    audio.play();
+
+  } else {
+
+    audio.pause();
+
+  }
+}
 
 </script>
   <script src="sidebar.js"></script>
