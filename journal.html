@@ -408,227 +408,78 @@ body {
 </head>
 
 <body>
+      <!-- Calm Hero -->
+      <section class="calm-hero">
+        <div class="calm-overlay"></div>
 
-  <div class="journal-container">
-    <h1 class="journal-title">How are you feeling today?</h1>
-<p class="journal-subtitle">Take a breath and write freely.</p>
-    <div class="daily-prompt" id="dailyPrompt"></div>
-    <textarea id="journalInput" class="journal-input" placeholder="Write your thoughts..."></textarea>
+        <div class="calm-content">
+          <h1>Take a breath 🌿</h1>
 
-<button class="save-btn" onclick="saveJournal()">
-  Save Entry
-</button>
+          <p>
+            Slow down for a moment and reflect gently.
+          </p>
 
-    <div id="entries"></div>
+          <button class="calm-btn" onclick="startCalmMode()">
+            Start Calm Session
+          </button>
+        </div>
+      </section>
 
 
-    <a class="back" href="dashboard.html">← Back to Dashboard</a>
+      <!-- Journal Container -->
+      <section class="journal-container">
+
+        <h2 class="journal-heading">
+          How are you feeling today?
+        </h2>
+
+        <p id="dailyPrompt" class="daily-prompt"></p>
+
+
+        <textarea
+          id="journalInput"
+          placeholder="Write your thoughts..."
+        ></textarea>
+
+
+        <button class="save-btn" onclick="saveJournal()">
+          Save Entry
+        </button>
+
+
+        <!-- Calm Session Box -->
+        <div class="calm-session-box" id="calmSessionBox">
+
+          <div class="calm-circle" id="calmCircle">
+            Breathe
+          </div>
+
+          <p class="calm-instruction" id="calmInstruction">
+            Inhale slowly...
+          </p>
+
+        </div>
+
+
+        <!-- Journal Entries -->
+        <div id="journalEntries"></div>
+
+      </section>
+
+    </main>
   </div>
 
-  <!-- Firebase -->
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script src="firebase-config.js"></script>
-  <script src="toast.js"></script>
   <script src="auth.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="audio.js"></script>
+  <script src="journal.js"></script>
 
-  <script>
-    if (!localStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    }
-
-    async function saveJournal() {
-      const text = document.getElementById("journalInput").value.trim();
-      const uid = localStorage.getItem("loggedInUID");
-
-      if (!text) {
-        showToast("Write something first ✍️", "error");
-        return;
-      }
-
-      try {
-        const now = new Date();
-
-        await _db.collection("users")
-          .doc(uid)
-          .collection("journals")
-          .add({
-            text,
-            createdAt: Date.now(),
-            date: now.toLocaleDateString("en-CA"),
-            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            mood: localStorage.getItem("mindmate_mood") || "🙂"
-          });
-
-        showToast("Journal saved 💾", "success");
-        document.getElementById("journalInput").value = "";
-
-        loadJournals();
-
-      } catch (err) {
-        console.error(err);
-        showToast("Error saving journal", "error");
-      }
-    }
-    const prompts = [
-  "What drained your energy today?",
-  "What made you smile today?",
-  "What emotion stayed with you the longest?",
-  "What’s one thing you need right now?",
-  "What’s something you handled well today?",
-  "What thoughts keep repeating lately?",
-  "What would comfort you tonight?"
-];
-
-function loadPrompt() {
-  const promptEl = document.getElementById("dailyPrompt");
-  const random = prompts[Math.floor(Math.random() * prompts.length)];
-  promptEl.textContent = "🌿 " + random;
-}
-
-loadPrompt();
-
-window.onload = function () {
-  document.getElementById("journalInput").focus();
-  loadJournals();
-};
-    async function loadJournals() {
-      const uid = localStorage.getItem("loggedInUID");
-      const container = document.getElementById("entries");
-
-      container.innerHTML = "";
-
-      try {
-        const snap = await _db.collection("users")
-          .doc(uid)
-          .collection("journals")
-          .orderBy("createdAt", "desc")
-          .get();
-
-        snap.forEach(doc => {
-          const data = doc.data();
-          const id = doc.id; // 🔥 important
-
-          container.innerHTML += `
-    <div class="entry-card">
-
-  <div class="entry-top">
-
-    <div class="entry-mood">
-      ${data.mood || "🙂"}
-    </div>
-
-    <div class="entry-date">
-      ${data.date} • ${data.time}
-    </div>
-
-  </div>
-
-  <div class="entry-text">
-    ${data.text}
-  </div>
-
-  <div class="entry-actions">
-
-    <button class="edit-btn"
-      onclick="editJournal('${id}', \`${data.text}\`)">
-      ✏️ Edit
-    </button>
-
-    <button class="delete-btn"
-      onclick="deleteJournal('${id}')">
-      🗑 Delete
-    </button>
-
-  </div>
-
-</div>
-  `;
-        });
-
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = "Could not load journals";
-      }
-    }
-    let deleteId = null;
-
-function deleteJournal(id) {
-  deleteId = id;
-  document.getElementById("confirmBox").classList.remove("hidden");
-}
-
-    document.getElementById("confirmYes").onclick = async () => {
-  const uid = localStorage.getItem("loggedInUID");
-
-  try {
-    await _db.collection("users")
-      .doc(uid)
-      .collection("journals")
-      .doc(deleteId)
-      .delete();
-
-    showToast("Deleted 🗑️", "info");
-    loadJournals();
-
-  } catch (err) {
-    console.error(err);
-    showToast("Delete failed", "error");
-  }
-
-  document.getElementById("confirmBox").classList.add("hidden");
-};
-
-document.getElementById("confirmNo").onclick = () => {
-  document.getElementById("confirmBox").classList.add("hidden");
-};
-    function editJournal(id, oldText) {
-      const newText = prompt("Edit your entry:", oldText);
-
-      if (!newText) return;
-
-      const uid = localStorage.getItem("loggedInUID");
-
-      _db.collection("users")
-        .doc(uid)
-        .collection("journals")
-        .doc(id)
-        .update({
-          text: newText
-        })
-        .then(() => {
-          showToast("Updated ✨", "success");
-          loadJournals();
-        })
-        .catch(err => {
-          console.error(err);
-          showToast("Update failed", "error");
-        });
-    }
-    document.getElementById("confirmYes").onclick = async () => {
-  const uid = localStorage.getItem("loggedInUID");
-
-  
-
-  document.getElementById("confirmBox").classList.add("hidden");
-};
-
-document.getElementById("confirmNo").onclick = () => {
-  document.getElementById("confirmBox").classList.add("hidden");
-};
-  </script>
-  <div id="confirmBox" class="confirm-box hidden">
-  <div class="confirm-content">
-    <p>Delete this entry?</p>
-    <div class="confirm-actions">
-      <button id="confirmYes">Delete</button>
-      <button id="confirmNo">Cancel</button>
-    </div>
-  </div>
-</div>
-  <div class="toast-container" id="toastContainer"></div>
 </body>
 
 </html>
