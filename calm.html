@@ -110,4 +110,18 @@
         } else {
           text.textContent = "Exhale gently...";
         }
+        inhale = !inhale;      
+      }, 
+                  4000);
+    }    
+    function toggleRain() {      
+      const audio = document.getElementById("rainAudio");      
+      if (audio.paused) {        
+        audio.play();      
+      } else {        
+        audio.pause();      
+      }    }  
+  </script>
+</body>
+
 </html>
