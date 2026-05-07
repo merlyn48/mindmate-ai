@@ -1297,6 +1297,10 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+/* ─────────────────────────────
+   FILE UPLOAD HANDLER
+───────────────────────────── */
+
 let uploadedFile = null;
 
 document
@@ -1314,20 +1318,28 @@ document
 
     preview.innerHTML = "";
 
+    /* IMAGE PREVIEW */
     if (file.type.startsWith("image/")) {
 
       const img =
         document.createElement("img");
 
-      img.className = "preview-image";
+      img.className =
+        "preview-image";
 
       img.src =
         URL.createObjectURL(file);
 
       preview.appendChild(img);
+
     } else {
 
-      preview.innerHTML =
-        `<p>📄 ${file.name}</p>`;
+      /* FILE PREVIEW */
+
+      preview.innerHTML = `
+        <div class="preview-file">
+          📄 ${file.name}
+        </div>
+      `;
     }
 });
