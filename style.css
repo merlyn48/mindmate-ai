@@ -663,5 +663,102 @@ textarea.input-style { min-height:120px;resize:vertical; }
 
   display: flex;
   align-items: center;
-  animation: breathe 8s infinite ease
+  animation: breathe 8s infinite ease;
+}
+
+.calm-instruction {
+  margin-top: 18px;
+  color: #5b4fcf;
+  font-weight: 600;
+}
+
+@keyframes breathe {
+
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(0.9);
+  }
+}
+
+/* Journal Entries */
+
+.entry-card {
+  margin-top: 24px;
+
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 10px 30px rgba(124,106,247,0.08);
+}
+
+.entry-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.entry-mood {
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  background: #ede9fe;
+  color: #6d28d9;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.entry-date {
+  color: #8a84aa;
+  font-size: 13px;
+}
+
+.entry-text {
+  font-size: 17px;
+  line-height: 1.8;
+
+  margin-bottom: 20px;
+
+  color: #352f55;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.edit-btn,
+.delete-btn {
+  flex: 1;
+
+  border: none;
+  border-radius: 16px;
+
+  padding: 14px;
+
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
 }
