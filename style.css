@@ -841,6 +841,50 @@ textarea.input-style { min-height:120px;resize:vertical; }
   color: black;
 }
 
+/* ─────────────────────────────
+   FILE UPLOAD UI
+───────────────────────────── */
+
+.input-area {
+  position: relative;
+}
+
+#uploadPreview {
+  position: absolute;
+
+  bottom: 78px;
+  left: 16px;
+
+  z-index: 20;
+}
+
+.preview-image {
+  max-width: 180px;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.15);
+}
+
+.preview-file {
+  padding: 12px 16px;
+
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(12px);
+
+  color: white;
+
+  font-size: 14px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 .upload-btn {
   cursor: pointer;
 
@@ -848,23 +892,9 @@ textarea.input-style { min-height:120px;resize:vertical; }
 
   padding: 10px;
 
-  color: var(--c-accent);
-
-  transition: 0.2s;
+  transition: transform 0.2s ease;
 }
 
 .upload-btn:hover {
-  transform: scale(1.1);
-}
-
-#uploadPreview {
-  margin-bottom: 12px;
-}
-
-.preview-image {
-  max-width: 180px;
-
-  border-radius: 16px;
-
-  margin-top: 10px;
+  transform: scale(1.08);
 }
