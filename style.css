@@ -816,3 +816,27 @@ textarea.input-style { min-height:120px;resize:vertical; }
   background: #fee2e2;
   color: #dc2626;
 }
+
+#soundSelector {
+  margin-top: 18px;
+
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 16px;
+
+  border: none;
+
+  background: rgba(255,255,255,0.18);
+
+  color: white;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+#soundSelector option {
+  color: black;
+}
