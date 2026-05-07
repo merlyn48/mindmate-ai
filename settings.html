@@ -94,35 +94,44 @@
     if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark-mode");
   </script>
 
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
+  <header class="mobile-header" aria-label="Mobile navigation">
+    <button class="hamburger" onclick="openSidebar()" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-logo">MindMate AI</span>
+  </header>
+
   <div class="app-container">
 
-    <aside class="sidebar" role="navigation" aria-label="Main sidebar">
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main sidebar">
       <h2 class="logo">MindMate AI</h2>
-
       <div class="sidebar-profile">
         <img id="sidebarAvatar" class="sidebar-avatar" alt="Your avatar">
-        <div class="sidebar-user"><span id="sidebarName"></span></div>
+        <div class="sidebar-user">
+          <span id="sidebarName"></span>
+        </div>
       </div>
-
-      <nav class="nav-main">
+      <nav class="nav-main" aria-label="Main navigation">
         <a href="dashboard.html">Dashboard</a>
         <a href="index.html">Chat</a>
         <a href="journal.html">Journal</a>
+        <<a href="calm.html">Calm Space</a>
       </nav>
-      <nav class="nav-secondary">
+      <nav class="nav-secondary" aria-label="Account navigation">
         <a href="profile.html">Profile</a>
         <a href="settings.html">Settings</a>
       </nav>
-      <nav class="nav-info">
+      <nav class="nav-info" aria-label="Info pages">
         <a href="about.html">About</a>
         <a href="faq.html">FAQ</a>
         <a href="contact.html">Contact</a>
         <a href="privacy.html">Privacy Policy</a>
       </nav>
-
       <div class="sidebar-footer">
-        <button id="audioToggle" class="sidebar-audio-btn">🎵 Calm Audio</button>
-        <button onclick="logout()" class="logout-btn">Logout</button>
+        <button id="audioToggle" class="sidebar-audio-btn" aria-label="Toggle calm audio">🎵 Calm Audio</button>
+        <button onclick="logout()" class="logout-btn" aria-label="Log out">Logout</button>
       </div>
     </aside>
 
