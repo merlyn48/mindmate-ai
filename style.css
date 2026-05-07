@@ -584,3 +584,84 @@ textarea.input-style { min-height:120px;resize:vertical; }
   background: #fee2e2;
   color: #dc2626;
 }
+
+/* ─────────────────────────────────────
+   CALM PAGE
+───────────────────────────────────── */
+
+.calm-page {
+  margin: 0;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(180deg,#7c6af7,#60a5fa);
+
+  font-family: 'DM Sans', sans-serif;
+}
+
+.calm-bg {
+  position: fixed;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at top,
+    rgba(255,255,255,0.25),
+    transparent 40%);
+}
+
+.calm-main {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+}
+
+.calm-card {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 520px;
+
+  padding: 50px 40px;
+
+  border-radius: 36px;
+
+  background: rgba(255,255,255,0.14);
+
+  backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255,255,255,0.25);
+
+  text-align: center;
+
+  color: white;
+}
+
+.calm-card h1 {
+  font-size: 44px;
+  margin-bottom: 12px;
+}
+
+.calm-card p {
+  opacity: 0.9;
+  margin-bottom: 40px;
+}
+
+.breathing-circle {
+  width: 200px;
+  height: 200px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  animation: breathe 8s infinite ease
+}
