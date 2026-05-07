@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Calm Space — MindMate AI</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
+<body class="calm-page">
+
+  <div id="sidebarOverlay" class="sidebar-overlay"
+       onclick="closeSidebar()" aria-hidden="true"></div>
 
   <header class="mobile-header" aria-label="Mobile navigation">
-    <button class="hamburger" onclick="openSidebar()" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn">
-      <span></span><span></span><span></span>
+
+    <button class="hamburger"
+            onclick="openSidebar()"
+            aria-label="Open menu"
+            aria-expanded="false"
+            id="hamburgerBtn">
+
+      <span></span>
+      <span></span>
+      <span></span>
+
     </button>
+
     <span class="mobile-logo">MindMate AI</span>
+
   </header>
 
   <div class="app-container">
@@ -47,10 +64,9 @@
         <button onclick="logout()" class="logout-btn" aria-label="Log out">Logout</button>
       </div>
     </aside>
-<body class="calm-page">
 
   <div class="calm-bg"></div>
-
+<div class="main-area">
   <main class="calm-main">
 
     <div class="calm-card">
@@ -88,6 +104,7 @@
     </div>
 
   </main>
+  </div>
 
   <script>
 
@@ -122,6 +139,9 @@
         audio.pause();      
       }    }  
   </script>
+  <script src="sidebar.js"></script>
+<script src="audio.js"></script>
+<script src="auth.js"></script>
 </body>
 
 </html>
