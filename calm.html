@@ -87,15 +87,15 @@
 
       <div class="calm-buttons">
 
-        <button onclick="startBreathing()">
-          Start Session
-        </button>
+  <button id="sessionBtn" onclick="toggleBreathing()">
+    ▶ Start Session
+  </button>
 
-        <button onclick="toggleRain()">
-          🌧 Rain Sound
-        </button>
+  <button onclick="toggleRain()">
+    🌧 Rain Sound
+  </button>
 
-      </div>
+</div>
 
       <audio id="rainAudio" loop>
         <source src="rain.mp3" type="audio/mpeg">
@@ -108,37 +108,75 @@
 
   <script>
 
-    let calmStarted = false;
+  let breathingInterval = null;
+  let inhale = true;
+  let isRunning = false;
 
-    function startBreathing() {
+  function toggleBreathing() {
 
-      if (calmStarted) return;
+    const text =
+      document.getElementById("breathingText");
 
-      calmStarted = true;
+    const button =
+      document.getElementById("sessionBtn");
 
-      const text = document.getElementById("breathingText");
+    if (!isRunning) {
 
-      let inhale = true;
+      isRunning = true;
 
-      setInterval(() => {
+      button.textContent =
+        "⏸ Stop Session";
+
+      text.textContent =
+        "Inhale slowly...";
+
+      breathingInterval = setInterval(() => {
 
         if (inhale) {
-          text.textContent = "Inhale slowly...";
+          text.textContent =
+            "Exhale gently...";
         } else {
-          text.textContent = "Exhale gently...";
+          text.textContent =
+            "Inhale slowly...";
         }
-        inhale = !inhale;      
-      }, 
-                  4000);
-    }    
-    function toggleRain() {      
-      const audio = document.getElementById("rainAudio");      
-      if (audio.paused) {        
-        audio.play();      
-      } else {        
-        audio.pause();      
-      }    }  
-  </script>
+
+        inhale = !inhale;
+
+      }, 4000);
+
+    } else {
+
+      isRunning = false;
+
+      clearInterval(breathingInterval);
+
+      button.textContent =
+        "▶ Start Session";
+
+      text.textContent =
+        "Session paused";
+
+    }
+  }
+
+
+  function toggleRain() {
+
+    const audio =
+      document.getElementById("rainAudio");
+
+    if (audio.paused) {
+
+      audio.play();
+
+    } else {
+
+      audio.pause();
+
+    }
+  }
+
+</script>
   <script src="sidebar.js"></script>
 <script src="audio.js"></script>
 <script src="auth.js"></script>
