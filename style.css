@@ -602,13 +602,16 @@ textarea.input-style { min-height:120px;resize:vertical; }
 }
 
 .calm-bg {
-  position: fixed;
+   position: fixed;
   inset: 0;
 
   background:
     radial-gradient(circle at top,
     rgba(255,255,255,0.25),
     transparent 40%);
+
+  pointer-events: none;
+  z-index: -1;
 }
 
 .calm-main {
@@ -617,7 +620,8 @@ textarea.input-style { min-height:120px;resize:vertical; }
   display: flex;
   align-items: center;
   justify-content: center;
-
+   position: relative;
+z-index: 2;
   padding: 30px;
 }
 
