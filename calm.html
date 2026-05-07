@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calm Space — MindMate AI</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="calm-page">
+
+  <div class="calm-bg"></div>
+
+  <main class="calm-main">
+
+    <div class="calm-card">
+
+      <h1>Take a breath 🌿</h1>
+
+      <p>
+        Pause for a moment and reset your mind.
+      </p>
+
+      <div class="breathing-circle" id="breathingCircle">
+        Breathe
+      </div>
+
+      <div class="breathing-text" id="breathingText">
+        Inhale slowly...
+      </div>
+
+      <div class="calm-buttons">
+
+        <button onclick="startBreathing()">
+          Start Session
+        </button>
+
+        <button onclick="toggleRain()">
+          🌧 Rain Sound
+        </button>
+
+      </div>
+
+      <audio id="rainAudio" loop>
+        <source src="rain.mp3" type="audio/mpeg">
+      </audio>
+
+    </div>
+
+  </main>
+
+  <script>
+
+    let calmStarted = false;
+
+    function startBreathing() {
+
+      if (calmStarted) return;
+
+      calmStarted = true;
+
+      const text = document.getElementById("breathingText");
+
+      let inhale = true;
+
+      setInterval(() => {
+
+        if (inhale) {
+          text.textContent = "Inhale slowly...";
+        } else {
+          text.textContent = "Exhale gently...";
+        }
+</html>
