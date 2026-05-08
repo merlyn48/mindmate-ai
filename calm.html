@@ -4,33 +4,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Calm Space — MindMate AI</title>
-
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Active nav link */
+    .sidebar a.active {
+      color: var(--c-accent, #7c6af7) !important;
+      background: var(--c-accent-soft, rgba(124,110,230,0.08));
+      font-weight: 500;
+    }
+
+    /* ── Sound selector button row ── */
+    .sound-selector-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .sound-option-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      color: white;
+      border-radius: 14px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .sound-option-btn:hover,
+    .sound-option-btn.active {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-1px);
+    }
+
+    /* ── Sound toggle button fix ── */
+    .calm-buttons button {
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .calm-buttons button:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+
+    /* Playing state for sound button */
+    #soundToggleBtn.playing {
+      background: #6d5df6;
+      color: white;
+    }
+  </style>
 </head>
 
 <body class="calm-page">
 
-  <div id="sidebarOverlay" class="sidebar-overlay"
-       onclick="closeSidebar()" aria-hidden="true"></div>
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
 
   <header class="mobile-header" aria-label="Mobile navigation">
-
-    <button class="hamburger"
-            onclick="openSidebar()"
-            aria-label="Open menu"
-            aria-expanded="false"
-            id="hamburgerBtn">
-
-      <span></span>
-      <span></span>
-      <span></span>
-
+    <button class="hamburger" onclick="openSidebar()" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn">
+      <span></span><span></span><span></span>
     </button>
-
     <span class="mobile-logo">MindMate AI</span>
-
   </header>
 
   <div class="app-container">
@@ -47,7 +88,7 @@
         <a href="dashboard.html">Dashboard</a>
         <a href="index.html">Chat</a>
         <a href="journal.html">Journal</a>
-        <a href="calm.html">Calm Space</a>
+        <a href="calm.html" class="active">🌿 Calm Space</a>
       </nav>
       <nav class="nav-secondary" aria-label="Account navigation">
         <a href="profile.html">Profile</a>
@@ -65,138 +106,158 @@
       </div>
     </aside>
 
-  <div class="calm-bg"></div>
-<div class="main-area">
-  <main class="calm-main">
+    <!-- Background overlay -->
+    <div class="calm-bg"></div>
 
-    <div class="calm-card">
+    <div class="main-area">
+      <main class="calm-main">
 
-      <h1>Take a breath 🌿</h1>
+        <div class="calm-card">
 
-      <p>
-        Pause for a moment and reset your mind.
-      </p>
+          <h1>Take a breath 🌿</h1>
+          <p>Pause for a moment and reset your mind.</p>
 
-      <div class="breathing-circle" id="breathingCircle">
-        Breathe
-      </div>
+          <!-- Breathing circle (animated via CSS) -->
+          <div class="breathing-circle" id="breathingCircle">
+            Breathe
+          </div>
 
-      <div class="breathing-text" id="breathingText">
-        Inhale slowly...
-      </div>
+          <!-- Instruction text (toggled by JS) -->
+          <div class="breathing-text" id="breathingText">
+            Inhale slowly...
+          </div>
 
-      <div class="calm-buttons">
+          <!-- Action buttons -->
+          <div class="calm-buttons">
+            <button id="sessionBtn" onclick="toggleBreathing()">
+              ▶ Start Session
+            </button>
 
-  <button id="sessionBtn" onclick="toggleBreathing()">
-    ▶ Start Session
-  </button>
+            <button id="soundToggleBtn" onclick="toggleSound()">
+              🔇 Play Sound
+            </button>
+          </div>
 
-  <button onclick="toggleRain()">
-    🌧 Rain Sound
-  </button>
+          <!-- Sound picker — buttons instead of broken <select> -->
+          <div class="sound-selector-row" id="soundSelectorRow">
+            <button class="sound-option-btn active" data-src="rain.mp3"   onclick="selectSound(this)">🌧 Rain</button>
+            <button class="sound-option-btn"         data-src="forest.mp3" onclick="selectSound(this)">🌲 Forest</button>
+            <button class="sound-option-btn"         data-src="ocean.mp3"  onclick="selectSound(this)">🌊 Ocean</button>
+            <button class="sound-option-btn"         data-src="piano.mp3"  onclick="selectSound(this)">🎹 Piano</button>
+          </div>
 
-</div>
+        </div>
 
-      <select id="soundSelector">
-        <audio id="rainAudio" loop>
-  <source src="rain.mp3" type="audio/mpeg">
-</audio>
-  <option value="rain.mp3">🌧 Rain</option>
-  <option value="forest.mp3">🌲 Forest</option>
-  <option value="ocean.mp3">🌊 Ocean</option>
-  <option value="piano.mp3">🎹 Piano</option>
-</select>
-
+      </main>
     </div>
 
-  </main>
   </div>
 
-  <script>
+  <!-- Single audio element — outside the select, correctly placed -->
+  <audio id="calmAudio" loop></audio>
 
-  let breathingInterval = null;
-  let inhale = true;
-  let isRunning = false;
-
-  function toggleBreathing() {
-
-    const text =
-      document.getElementById("breathingText");
-
-    const button =
-      document.getElementById("sessionBtn");
-
-    if (!isRunning) {
-
-      isRunning = true;
-
-      button.textContent =
-        "⏸ Stop Session";
-
-      text.textContent =
-        "Inhale slowly...";
-
-      breathingInterval = setInterval(() => {
-
-        if (inhale) {
-          text.textContent =
-            "Exhale gently...";
-        } else {
-          text.textContent =
-            "Inhale slowly...";
-        }
-
-        inhale = !inhale;
-
-      }, 4000);
-
-    } else {
-
-      isRunning = false;
-
-      clearInterval(breathingInterval);
-
-      button.textContent =
-        "▶ Start Session";
-
-      text.textContent =
-        "Session paused";
-
-    }
-  }
-
-
-  function toggleRain() {
-
-  const audio =
-    document.getElementById("rainAudio");
-
-  const selector =
-    document.getElementById("soundSelector");
-
-  const selectedSound =
-    selector.value;
-
-  if (!audio.src.includes(selectedSound)) {
-
-    audio.src = selectedSound;
-  }
-
-  if (audio.paused) {
-
-    audio.play();
-
-  } else {
-
-    audio.pause();
-
-  }
-}
-
-</script>
   <script src="sidebar.js"></script>
-<script src="audio.js"></script>
-<script src="auth.js"></script>
-</body>
+  <script src="audio.js"></script>
+  <script src="auth.js"></script>
 
+  <script>
+    /* ── Auth guard ── */
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    /* ── Mobile sidebar ── */
+    function openSidebar() {
+      document.getElementById("sidebar").classList.add("sidebar-open");
+      document.getElementById("sidebarOverlay").classList.add("visible");
+    }
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("sidebar-open");
+      document.getElementById("sidebarOverlay").classList.remove("visible");
+    }
+
+    /* ══════════════════════════════════
+       BREATHING SESSION
+    ══════════════════════════════════ */
+    let breathingInterval = null;
+    let inhale   = true;
+    let isRunning = false;
+
+    function toggleBreathing() {
+      const text   = document.getElementById("breathingText");
+      const button = document.getElementById("sessionBtn");
+
+      if (!isRunning) {
+        isRunning = true;
+        button.textContent = "⏸ Stop Session";
+        text.textContent   = "Inhale slowly...";
+        inhale = true;
+
+        breathingInterval = setInterval(() => {
+          inhale = !inhale;
+          text.textContent = inhale ? "Inhale slowly..." : "Exhale gently...";
+        }, 4000);
+
+      } else {
+        isRunning = false;
+        clearInterval(breathingInterval);
+        button.textContent = "▶ Start Session";
+        text.textContent   = "Session paused";
+      }
+    }
+
+    /* ══════════════════════════════════
+       SOUND PLAYER
+    ══════════════════════════════════ */
+    const audio        = document.getElementById("calmAudio");
+    let   selectedSrc  = "rain.mp3";   // default
+    let   soundPlaying = false;
+
+    /* Switch which sound file is selected */
+    function selectSound(btn) {
+      document.querySelectorAll(".sound-option-btn")
+        .forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedSrc = btn.dataset.src;
+
+      /* If already playing, swap file and keep playing */
+      if (soundPlaying) {
+        audio.src = selectedSrc;
+        audio.play().catch(() => {});
+      }
+    }
+
+    /* Play / Pause toggle */
+    function toggleSound() {
+      const btn = document.getElementById("soundToggleBtn");
+
+      if (soundPlaying) {
+        audio.pause();
+        soundPlaying       = false;
+        btn.textContent    = "🔇 Play Sound";
+        btn.classList.remove("playing");
+      } else {
+        /* Load the selected sound if not already loaded */
+        if (!audio.src || !audio.src.endsWith(selectedSrc)) {
+          audio.src = selectedSrc;
+        }
+        audio.play()
+          .then(() => {
+            soundPlaying    = true;
+            btn.textContent = "🔊 Stop Sound";
+            btn.classList.add("playing");
+          })
+          .catch(err => {
+            console.warn("Audio play failed:", err);
+          });
+      }
+    }
+
+    /* Stop audio when page unloads */
+    window.addEventListener("beforeunload", () => {
+      if (!audio.paused) audio.pause();
+    });
+  </script>
+
+</body>
 </html>
