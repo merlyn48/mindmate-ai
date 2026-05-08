@@ -679,108 +679,54 @@
   const container = document.getElementById("journalPreview");
   if (!container) return;
 
+  container.innerHTML = "<p style='color:var(--c-muted);font-size:13px;padding:8px'>Loading...</p>";
+
   try {
-
-    /* FIREBASE */
+    /* ── FIREBASE: correct collection name is "journals" (plural) ── */
     if (user && window._db) {
-
       const snapshot = await _db
         .collection("users")
         .doc(user.uid)
-        .collection("journal")
+        .collection("journals")          // fixed: was "journal"
         .orderBy("createdAt", "desc")
         .limit(1)
         .get();
 
       if (!snapshot.empty) {
-
         const entry = snapshot.docs[0].data();
-
+        const preview = (entry.text || "").substring(0, 160);
+        const hasMore = (entry.text || "").length > 160;
         container.innerHTML = `
           <div class="journal-preview-card">
-
             <div class="journal-preview-top">
-              <span class="journal-emoji">📝</span>
-
-              <span class="journal-date">
-                ${entry.date || new Date().toLocaleDateString()}
-              </span>
+              <span class="journal-emoji">${entry.mood || "📝"}</span>
+              <span class="journal-date">${entry.date || ""} ${entry.time ? "· " + entry.time : ""}</span>
             </div>
-
             <div class="journal-preview-text">
-              "${entry.text?.substring(0, 140) || "No journal text"}..."
+              "${preview}${hasMore ? "…" : ""}"
             </div>
-
-            <a href="journal.html" class="journal-preview-link">
-              Open Journal →
-            </a>
-
-          </div>
-        `;
-
+            <a href="journal.html" class="journal-preview-link">Open Journal →</a>
+          </div>`;
         return;
       }
     }
-
   } catch (err) {
     console.error("Journal preview failed:", err);
   }
 
-  /* LOCAL STORAGE FALLBACK */
-  const localEntries = JSON.parse(
-    localStorage.getItem("mindmate_journal") || "[]"
-  );
-
-  if (localEntries.length) {
-
-    const entry = localEntries[localEntries.length - 1];
-
-    container.innerHTML = `
-      <div class="journal-preview-card">
-
-        <div class="journal-preview-top">
-          <span class="journal-emoji">📝</span>
-
-          <span class="journal-date">
-            ${new Date().toLocaleDateString()}
-          </span>
-        </div>
-
-        <div class="journal-preview-text">
-          "${entry.text?.substring(0, 140) || "No journal text"}..."
-        </div>
-
-        <a href="journal.html" class="journal-preview-link">
-          Open Journal →
-        </a>
-
+  /* ── Empty state: always encourage writing, not "first" entry ── */
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  container.innerHTML = `
+    <div class="journal-preview-card">
+      <div class="journal-preview-top">
+        <span class="journal-emoji">🌿</span>
+        <span class="journal-date">${today}</span>
       </div>
-    `;
-
-  } else {
-
-    container.innerHTML = `
-      <div class="journal-preview-card">
-
-        <div class="journal-preview-top">
-          <span class="journal-emoji">🌿</span>
-
-          <span class="journal-date">
-            No entries yet
-          </span>
-        </div>
-
-        <div class="journal-preview-text">
-          Start journaling to reflect on your thoughts and emotions.
-        </div>
-
-        <a href="journal.html" class="journal-preview-link">
-          Write First Entry →
-        </a>
-
+      <div class="journal-preview-text">
+        How are you feeling today? A few words can go a long way.
       </div>
-    `;
-  }
+      <a href="journal.html" class="journal-preview-link">Write Today's Entry →</a>
+    </div>`;
 }
     window.addEventListener("DOMContentLoaded", () => {
   const mood = localStorage.getItem("mindmate_mood");
