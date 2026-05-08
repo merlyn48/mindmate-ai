@@ -377,9 +377,8 @@
         <div class="chart-wrap" id="trendChart" aria-label="7-day wellness bar chart">
           <!-- Bars injected by JS -->
         </div>
-        <div class="week-labels" aria-hidden="true">
-          <span>Mon</span><span>Tue</span><span>Wed</span>
-          <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        <div class="week-labels" id="trendLabels" aria-hidden="true">
+          <!-- Day labels injected by renderTrendChart() -->
         </div>
       </section>
 
@@ -479,23 +478,6 @@
 
       localStorage.setItem("mindmate_mood", mood);
 
-      const rawDay = new Date().getDay();
-
-/* Convert Sunday-first → Monday-first */
-const today = rawDay === 0 ? 6 : rawDay - 1;
-
-const moodWeek = safeParseJSON(
-  localStorage.getItem("mindmate_week_moods"),
-  {}
-);
-
-moodWeek[today] = mood;
-
-localStorage.setItem(
-  "mindmate_week_moods",
-  JSON.stringify(moodWeek)
-);
-
       const responses = {
         happy: "I'm glad you're feeling good today 😊",
         okay: "Thanks for checking in. I'm here if you want to talk.",
@@ -505,38 +487,57 @@ localStorage.setItem(
       const resultEl = document.getElementById("moodResult");
       if (resultEl) resultEl.textContent = responses[mood] || "";
 
-      /* Also record in AI tracker if backend available */
+      /* Always record into MoodTracker (drives the chart) */
+      const moodScoreMap = { happy: 80, okay: 55, stressed: 30, sad: 25 };
+      const mv = { valence: 0, arousal: 0, dominance: 0, score: moodScoreMap[mood] || 50, dominant: mood, hasCrisis: false };
+
       if (window.MindMateBackend) {
-        const moodScoreMap = { happy: 80, okay: 55, stressed: 30, sad: 25 };
-        const mv = { valence: 0, arousal: 0, dominance: 0, score: moodScoreMap[mood] || 50, dominant: mood, hasCrisis: false };
         window.MindMateBackend.MoodTracker.record(mv, "dashboard check-in: " + mood);
         renderRecommendations(mv);
-        renderTrendChart();
       }
+
+      /* Always refresh chart regardless of backend */
+      renderTrendChart();
     }
 
     /* ── Render 7-day trend chart ───────────────────────── */
     function renderTrendChart() {
       if (!window.MindMateBackend) return;
 
-      const { scores, summary } = window.MindMateBackend.getWeeklyData();
-      const chart = document.getElementById("trendChart");
+      const chart      = document.getElementById("trendChart");
+      const labelsEl   = document.getElementById("trendLabels");
       if (!chart) return;
 
-      chart.innerHTML = "";
-      const moodWeek = safeParseJSON(localStorage.getItem("mindmate_week_moods"), {});
+      // Build the rolling 7-day window anchored to TODAY
+      // Index 0 = 6 days ago … index 6 = today
+      const DAY_NAMES  = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+      const now        = new Date();
+      const todayIdx   = now.getDay(); // 0=Sun … 6=Sat
 
-      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-
-      days.forEach((day, index) => {
-        const mood = moodWeek[index];
-      // render mood here
+      // Generate the 7 actual day labels in order
+      const dayLabels = Array.from({ length: 7 }, (_, i) => {
+        const offset = i - 6; // -6 … 0 (0 = today)
+        const d = new Date(now);
+        d.setDate(now.getDate() + offset);
+        return { label: DAY_NAMES[d.getDay()], isToday: offset === 0 };
       });
-      const MAX_H = 120;
 
+      // Get scores aligned to the same rolling window from the backend
+      const scores = window.MindMateBackend.MoodTracker.weeklyScores();
+      // weeklyScores() already returns 7 values: [6daysAgo … today]
+
+      const summary = window.MindMateBackend.MoodTracker.summary();
+      const MAX_H   = 120;
+
+      // Render bars
+      chart.innerHTML = "";
       scores.forEach((score, i) => {
         const group = document.createElement("div");
         group.className = "chart-bar-group";
+
+        const scoreLabel = document.createElement("div");
+        scoreLabel.className = "chart-score";
+        scoreLabel.textContent = score !== null ? score : "–";
 
         const bar = document.createElement("div");
         if (score === null) {
@@ -546,44 +547,55 @@ localStorage.setItem(
           const cls = score >= 60 ? "score-high" : score >= 40 ? "score-mid" : "score-low";
           bar.className = "chart-bar " + cls;
           bar.style.height = Math.max(4, Math.round(score / 100 * MAX_H)) + "px";
-          bar.title = days[i] + ": " + score + "/100";
+          bar.title = dayLabels[i].label + ": " + score + "/100";
         }
-
-        const scoreLabel = document.createElement("div");
-        scoreLabel.className = "chart-score";
-        scoreLabel.textContent = score !== null ? score : "–";
 
         group.appendChild(scoreLabel);
         group.appendChild(bar);
         chart.appendChild(group);
       });
 
-      /* Wellness ring */
-      if (summary.averageWellnessScore !== null) {
-        const avgEl = document.getElementById("avgScoreText");
-        if (avgEl) avgEl.textContent = summary.averageWellnessScore;
+      // Render dynamic day labels (replaces hardcoded Mon-Sun)
+      if (labelsEl) {
+        labelsEl.innerHTML = "";
+        dayLabels.forEach(({ label, isToday }) => {
+          const span = document.createElement("span");
+          span.textContent = label;
+          if (isToday) {
+            span.style.color     = "var(--c-accent, #7c6af7)";
+            span.style.fontWeight = "600";
+          }
+          labelsEl.appendChild(span);
+        });
+      }
 
-        /* SVG ring: circumference = 2π×28 ≈ 175.9 */
-        const arc = document.getElementById("ringArc");
+      // Wellness ring
+      const arc   = document.getElementById("ringArc");
+      const avgEl = document.getElementById("avgScoreText");
+      if (summary.averageWellnessScore !== null) {
+        if (avgEl) avgEl.textContent = summary.averageWellnessScore;
         if (arc) {
           const offset = 175.9 - (summary.averageWellnessScore / 100) * 175.9;
           arc.style.strokeDashoffset = offset;
-          const score = summary.averageWellnessScore;
-          arc.style.stroke = score >= 60 ? "#22c55e" : score >= 40 ? "#f59e0b" : "#ef4444";
+          const s = summary.averageWellnessScore;
+          arc.style.stroke = s >= 60 ? "#22c55e" : s >= 40 ? "#f59e0b" : "#ef4444";
         }
+      } else {
+        if (avgEl) avgEl.textContent = "—";
       }
 
-      /* Trend badge */
+      // Trend badge
       const badge = document.getElementById("trendBadge");
       if (badge && summary.trend) {
         const icons = { improving: "↑", declining: "↓", stable: "→" };
-        badge.textContent = icons[summary.trend] + " " + summary.trend.charAt(0).toUpperCase() + summary.trend.slice(1);
+        badge.textContent = (icons[summary.trend] || "→") + " " +
+          summary.trend.charAt(0).toUpperCase() + summary.trend.slice(1);
         badge.className = "trend-badge " + summary.trend;
         badge.style.display = "inline-flex";
       }
     }
 
-    /* ── Render recommendation cards ──────────────────── */
+        /* ── Render recommendation cards ──────────────────── */
     function renderRecommendations(moodVector) {
       if (!window.MindMateBackend) return;
       const container = document.getElementById("recsContainer");
