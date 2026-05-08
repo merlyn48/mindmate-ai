@@ -1,18 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Privacy Policy - MindMate AI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Privacy Policy - MindMate AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--c-accent); margin-bottom: 12px; display: block;
+    }
+    .privacy-intro {
+      background: linear-gradient(135deg, var(--c-accent-soft), rgba(125,213,200,0.06));
+      border: 1px solid var(--c-border); border-radius: var(--r-lg);
+      padding: 28px 28px; margin-bottom: 22px;
+      animation: fadeUp 0.4s var(--ease-out) both;
+    }
+    .privacy-intro p { font-size: 14.5px; color: var(--c-muted); line-height: 1.7; }
+    .privacy-intro strong { color: var(--c-text); }
+    .privacy-updated {
+      display: inline-block; margin-top: 12px; font-size: 12px;
+      color: var(--c-accent); background: var(--c-accent-soft);
+      border: 1px solid var(--c-border); border-radius: 100px;
+      padding: 4px 12px;
+    }
+    .privacy-section { margin-bottom: 0; }
+    .privacy-section h3 {
+      font-size: 15.5px; font-weight: 600; margin-bottom: 10px;
+      color: var(--c-text); display: flex; align-items: center; gap: 8px;
+    }
+    .privacy-section p {
+      font-size: 14px; color: var(--c-muted); line-height: 1.75; margin-bottom: 10px;
+    }
+    .privacy-section ul {
+      list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;
+    }
+    .privacy-section ul li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--c-muted); line-height: 1.6;
+    }
+    .privacy-section ul li::before {
+      content: '✓'; color: var(--c-accent); font-weight: 600;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .privacy-section ul li.no::before { content: '✕'; color: #e07a8a; }
+    .highlight-box {
+      background: var(--c-accent-soft); border: 1px solid var(--c-border);
+      border-radius: var(--r-sm); padding: 14px 16px; margin-top: 8px;
+      font-size: 13.5px; color: var(--c-text); line-height: 1.6;
+    }
+    .rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+    @media (max-width: 560px) { .rights-grid { grid-template-columns: 1fr; } }
+    .right-card {
+      background: var(--c-surface2); border: 1px solid var(--c-border);
+      border-radius: var(--r-sm); padding: 14px 14px;
+      font-size: 13.5px; color: var(--c-muted); line-height: 1.55;
+    }
+    .right-card strong { display: block; color: var(--c-text); margin-bottom: 4px; font-size: 14px; }
+    .divider { height: 1px; background: var(--c-border); margin: 4px 0 18px 0; }
+    .contact-note {
+      background: rgba(240,160,184,0.08); border: 1px solid rgba(240,160,184,0.28);
+      border-radius: var(--r-md); padding: 16px 20px; font-size: 13.5px;
+      color: var(--c-muted); line-height: 1.6; margin-top: 4px;
+      animation: fadeUp 0.5s var(--ease-out) both;
+    }
+    .contact-note strong { color: var(--c-text); }
+    .contact-note a { color: var(--c-accent); text-decoration: none; }
+    .contact-note a:hover { text-decoration: underline; }
+  </style>
 </head>
-
 <body>
 
-    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
-
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
   <header class="mobile-header" aria-label="Mobile navigation">
     <button class="hamburger" onclick="openSidebar()" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn">
       <span></span><span></span><span></span>
@@ -21,14 +81,11 @@
   </header>
 
   <div class="app-container">
-
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main sidebar">
       <h2 class="logo">MindMate AI</h2>
       <div class="sidebar-profile">
         <img id="sidebarAvatar" class="sidebar-avatar" alt="Your avatar">
-        <div class="sidebar-user">
-          <span id="sidebarName"></span>
-        </div>
+        <div class="sidebar-user"><span id="sidebarName"></span></div>
       </div>
       <nav class="nav-main" aria-label="Main navigation">
         <a href="dashboard.html">Dashboard</a>
@@ -51,35 +108,112 @@
         <button onclick="logout()" class="logout-btn" aria-label="Log out">Logout</button>
       </div>
     </aside>
-        <div class="page-wrapper">
 
-            <div class="page-header">
-                <h1>🔒 Privacy Policy</h1>
-            </div>
+    <main class="chat-section">
+      <div class="page-wrapper">
 
-            <div class="card-box">
-                <p>
-                    MindMate AI stores user data locally in the browser for session management.
-                </p>
-            </div>
-            <div class="card-box">
-                <p>
-                    No personal data is shared with third parties.
-                </p>
-            </div>
-            <div class="card-box">
-                <p>
-                    This project is developed for educational purposes.
-                </p>
-            </div>
-
+        <div class="page-header">
+          <h1>🔒 Privacy Policy</h1>
+          <p>How MindMate AI handles your information — clearly and honestly.</p>
         </div>
 
-    </div>
-    <script src="sidebar.js"></script>
-    <script src="toast.js"></script>
-<script src="audio.js"></script>
-<script src="effects.js"></script>
-</body>
+        <div class="privacy-intro">
+          <p>At MindMate AI, your privacy is a core value — not an afterthought. This policy explains exactly what data we collect, how it's used, and the control you have over it. <strong>We believe you deserve a clear answer, not legal jargon.</strong></p>
+          <span class="privacy-updated">Last updated: May 2025</span>
+        </div>
 
+        <!-- What we collect -->
+        <div class="card-box">
+          <span class="section-label">What We Collect</span>
+          <div class="privacy-section">
+            <h3>📋 Account Information</h3>
+            <p>When you sign in with Firebase Authentication, we collect your email address and a display name (if provided). This is used only to identify your account session and personalise your experience.</p>
+            <div class="divider"></div>
+            <h3>💬 Chat Messages</h3>
+            <p>Messages you send to MindMate AI are transmitted to our backend (Netlify Functions) and forwarded to the Claude AI API to generate a response. Chat messages are <strong>not stored</strong> on any server — they exist only for the duration of the request.</p>
+            <div class="divider"></div>
+            <h3>📓 Journal Entries & Mood Data</h3>
+            <p>Journal entries and mood logs are saved entirely in your browser's Local Storage. This data stays on your device and is never transmitted to our servers.</p>
+          </div>
+        </div>
+
+        <!-- What we don't do -->
+        <div class="card-box">
+          <span class="section-label">What We Never Do</span>
+          <div class="privacy-section">
+            <ul>
+              <li>Sell your personal data to advertisers or third parties</li>
+              <li>Store your chat conversations on our servers</li>
+              <li>Share your journal entries or mood data with anyone</li>
+              <li>Use your data to train AI models</li>
+              <li class="no">Track you across other websites or apps</li>
+              <li class="no">Send you unsolicited marketing emails</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Third-party services -->
+        <div class="card-box">
+          <span class="section-label">Third-Party Services</span>
+          <div class="privacy-section">
+            <p>MindMate AI uses a small number of trusted third-party services to function:</p>
+            <ul>
+              <li><strong>Firebase (Google)</strong> — handles user authentication (sign in / sign up). Governed by Google's Privacy Policy.</li>
+              <li><strong>Anthropic Claude API</strong> — processes your chat messages to generate AI responses. Messages are subject to Anthropic's data usage policy.</li>
+              <li><strong>Netlify</strong> — hosts the application and serverless functions. Standard access logs may be collected by Netlify.</li>
+            </ul>
+            <div class="highlight-box">
+              💡 No personally identifiable information is shared with these services beyond what is strictly necessary for them to function.
+            </div>
+          </div>
+        </div>
+
+        <!-- Your rights -->
+        <div class="card-box">
+          <span class="section-label">Your Rights & Controls</span>
+          <div class="privacy-section">
+            <p>You are in control of your data. Here's what you can do at any time:</p>
+            <div class="rights-grid">
+              <div class="right-card">
+                <strong>🗑️ Delete Your Data</strong>
+                Clear your journal and mood history anytime from your Profile settings or by clearing browser Local Storage.
+              </div>
+              <div class="right-card">
+                <strong>🔓 Sign Out</strong>
+                Logging out ends your session and removes your auth token from the browser.
+              </div>
+              <div class="right-card">
+                <strong>🚫 Stop Using the App</strong>
+                You can stop using MindMate at any time. No subscriptions, no commitments.
+              </div>
+              <div class="right-card">
+                <strong>📩 Contact Us</strong>
+                Have questions about your data? Reach out via the <a href="contact.html">Contact page</a> and we'll respond.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Educational use -->
+        <div class="card-box">
+          <span class="section-label">Educational Project Notice</span>
+          <div class="privacy-section">
+            <p>MindMate AI was developed as an educational project to explore how AI can support student mental wellness. It is not a commercial product and is not operated by a registered healthcare provider. While we take privacy seriously, this application has not undergone formal legal compliance review (e.g., HIPAA, GDPR audit).</p>
+            <p>We encourage users not to share highly sensitive personal information through the platform beyond what feels comfortable for a supportive chat tool.</p>
+          </div>
+        </div>
+
+        <div class="contact-note">
+          <strong>Questions about this policy?</strong> We're happy to clarify anything. Reach us via the <a href="contact.html">Contact page</a>. This policy may be updated occasionally — the "last updated" date at the top will reflect any changes.
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="sidebar.js"></script>
+  <script src="toast.js"></script>
+  <script src="audio.js"></script>
+  <script src="effects.js"></script>
+</body>
 </html>
