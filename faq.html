@@ -1,14 +1,74 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>FAQ</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>FAQ - MindMate AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--c-accent); margin-bottom: 14px; display: block;
+    }
+    .faq-group { margin-bottom: 28px; }
+    .faq-group-title {
+      font-size: 13px; font-weight: 600; color: var(--c-muted);
+      letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--c-border);
+    }
+    details.faq-item {
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      border-radius: var(--r-md); margin-bottom: 10px;
+      overflow: hidden; transition: all 0.25s var(--ease-spring);
+      animation: fadeUp 0.4s var(--ease-out) both;
+    }
+    details.faq-item:hover { border-color: var(--c-border-hover); box-shadow: var(--shadow-md); }
+    details.faq-item[open] {
+      border-color: var(--c-border-hover);
+      box-shadow: var(--shadow-glow);
+    }
+    details.faq-item summary {
+      padding: 16px 20px; cursor: pointer; font-size: 14.5px;
+      font-weight: 500; color: var(--c-text);
+      list-style: none; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+      user-select: none;
+    }
+    details.faq-item summary::-webkit-details-marker { display: none; }
+    details.faq-item summary::after {
+      content: '+'; font-size: 20px; font-weight: 300;
+      color: var(--c-accent); flex-shrink: 0;
+      transition: transform 0.25s var(--ease-spring);
+    }
+    details.faq-item[open] summary::after { content: '−'; }
+    .faq-answer {
+      padding: 0 20px 18px 20px; font-size: 14px;
+      color: var(--c-muted); line-height: 1.7;
+      border-top: 1px solid var(--c-border);
+      padding-top: 14px;
+    }
+    .faq-answer a { color: var(--c-accent); text-decoration: none; }
+    .faq-answer a:hover { text-decoration: underline; }
+    .contact-cta {
+      background: linear-gradient(135deg, var(--c-accent-soft), rgba(125,213,200,0.08));
+      border: 1px solid var(--c-border); border-radius: var(--r-lg);
+      padding: 26px 28px; text-align: center; margin-top: 8px;
+      animation: fadeUp 0.5s var(--ease-out) both;
+    }
+    .contact-cta p { color: var(--c-muted); font-size: 14px; margin-bottom: 14px; }
+    .contact-cta a {
+      display: inline-block; background: var(--c-accent); color: #fff;
+      padding: 10px 24px; border-radius: 100px; font-size: 14px;
+      font-weight: 500; text-decoration: none;
+      transition: all 0.2s var(--ease-spring);
+    }
+    .contact-cta a:hover { background: var(--c-accent2); transform: scale(1.04); box-shadow: var(--shadow-glow); }
+  </style>
 </head>
-
 <body>
-    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
 
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
   <header class="mobile-header" aria-label="Mobile navigation">
     <button class="hamburger" onclick="openSidebar()" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn">
       <span></span><span></span><span></span>
@@ -17,14 +77,11 @@
   </header>
 
   <div class="app-container">
-
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main sidebar">
       <h2 class="logo">MindMate AI</h2>
       <div class="sidebar-profile">
         <img id="sidebarAvatar" class="sidebar-avatar" alt="Your avatar">
-        <div class="sidebar-user">
-          <span id="sidebarName"></span>
-        </div>
+        <div class="sidebar-user"><span id="sidebarName"></span></div>
       </div>
       <nav class="nav-main" aria-label="Main navigation">
         <a href="dashboard.html">Dashboard</a>
@@ -47,37 +104,124 @@
         <button onclick="logout()" class="logout-btn" aria-label="Log out">Logout</button>
       </div>
     </aside>
-        <main class="chat-section">
 
-            <div class="page-wrapper">
+    <main class="chat-section">
+      <div class="page-wrapper">
 
-                <div class="page-header">
-                    <h1>Frequently Asked Questions</h1>
-                </div>
+        <div class="page-header">
+          <h1>Frequently Asked Questions</h1>
+          <p>Quick answers to the things students ask most.</p>
+        </div>
 
-                <div class="faq-item">
-                    <b>Is this real AI?</b>
-                    Currently this version uses rule-based logic.
-                </div>
+        <!-- About the AI -->
+        <div class="card-box">
+          <span class="section-label">About the AI</span>
+          <div class="faq-group">
 
-                <div class="faq-item">
-                    <b>Is my data stored?</b>
-                    Your data is stored locally in your browser.
-                </div>
+            <details class="faq-item">
+              <summary>Is MindMate powered by real AI?</summary>
+              <div class="faq-answer">Yes — MindMate uses the Claude AI API (by Anthropic) to power conversations. This means it can understand nuanced messages, respond thoughtfully, and adapt to what you're saying rather than relying on rigid scripts or keyword matching.</div>
+            </details>
 
-                <div class="faq-item">
-                    <b>Is MindMate a replacement for therapy?</b>
-                    No. It is only a support tool and not a medical service.
-                </div>
+            <details class="faq-item">
+              <summary>Can MindMate understand how I'm feeling?</summary>
+              <div class="faq-answer">MindMate is designed to be empathetic and context-aware. It picks up on emotional cues in your messages and responds with care. That said, it's an AI — it doesn't truly "feel," but it is built to respond in a way that is supportive, validating, and helpful.</div>
+            </details>
 
-            </div>
+            <details class="faq-item">
+              <summary>Does MindMate remember past conversations?</summary>
+              <div class="faq-answer">Within a single session, MindMate maintains context throughout your conversation. However, chat history is not currently persisted between sessions. Your journal entries are saved locally and are always accessible.</div>
+            </details>
 
-        </main>
-    </div>
-    <script src="sidebar.js"></script>
-    <script src="toast.js"></script>
-<script src="audio.js"></script>
-<script src="effects.js"></script>
+            <details class="faq-item">
+              <summary>What languages does MindMate support?</summary>
+              <div class="faq-answer">MindMate can understand and respond in multiple languages since the underlying Claude model is multilingual. However, the interface itself is currently in English only.</div>
+            </details>
+
+          </div>
+        </div>
+
+        <!-- Privacy & Data -->
+        <div class="card-box">
+          <span class="section-label">Privacy & Data</span>
+          <div class="faq-group">
+
+            <details class="faq-item">
+              <summary>Where is my data stored?</summary>
+              <div class="faq-answer">Your journal entries, mood logs, and profile settings are stored locally in your browser using Local Storage. They never leave your device unless you explicitly share them. Chat messages are sent to the AI to generate responses but are not stored on any server.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Is my data shared with anyone?</summary>
+              <div class="faq-answer">No. MindMate does not sell, share, or transfer your personal data to any third party. The only external service involved is the AI API used to generate chat responses, which is governed by its own privacy policy.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can I delete my data?</summary>
+              <div class="faq-answer">Yes. Since data is stored locally in your browser, you can clear it at any time by clearing your browser's Local Storage, or by using the option in your profile settings. This action is irreversible, so make sure you're ready before proceeding.</div>
+            </details>
+
+          </div>
+        </div>
+
+        <!-- Mental Health & Safety -->
+        <div class="card-box">
+          <span class="section-label">Mental Health & Safety</span>
+          <div class="faq-group">
+
+            <details class="faq-item">
+              <summary>Is MindMate a replacement for therapy?</summary>
+              <div class="faq-answer">No — and this is important. MindMate is a supportive tool, not a licensed mental health service. It can help you feel heard, process thoughts, and build healthy habits. But it is not a substitute for professional therapy, counselling, or psychiatric care. If you're struggling seriously, please reach out to a professional.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>What if I'm having a crisis or emergency?</summary>
+              <div class="faq-answer">If you are in immediate danger or experiencing a mental health crisis, please contact emergency services or a crisis helpline in your country right away. MindMate is not equipped to handle emergencies. In India, you can reach iCall at <strong>9152987821</strong> or Vandrevala Foundation at <strong>1860-2662-345</strong> (24/7).</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can students with anxiety or depression use MindMate?</summary>
+              <div class="faq-answer">MindMate is designed to be a gentle, supportive space for students dealing with everyday stress, anxiety, and low moods. If you have a diagnosed condition, MindMate can complement your care but should not replace it. Always follow the guidance of your healthcare provider.</div>
+            </details>
+
+          </div>
+        </div>
+
+        <!-- Using the App -->
+        <div class="card-box">
+          <span class="section-label">Using the App</span>
+          <div class="faq-group">
+
+            <details class="faq-item">
+              <summary>Is MindMate free to use?</summary>
+              <div class="faq-answer">Yes — MindMate AI is currently free to use. It was built as an educational project and is made available at no cost to students.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Does it work on mobile?</summary>
+              <div class="faq-answer">Yes. MindMate is fully responsive and works on smartphones and tablets, as well as desktop browsers. No app download is required.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Why isn't the AI responding?</summary>
+              <div class="faq-answer">If MindMate isn't responding, try refreshing the page or checking your internet connection. The AI requires an active connection to generate responses. If the issue persists, please use the Contact page to let us know.</div>
+            </details>
+
+          </div>
+        </div>
+
+        <div class="contact-cta">
+          <p>Still have a question that's not answered here?</p>
+          <a href="contact.html">Get in touch →</a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="sidebar.js"></script>
+  <script src="toast.js"></script>
+  <script src="audio.js"></script>
+  <script src="effects.js"></script>
 </body>
-
 </html>
