@@ -733,7 +733,16 @@
   const resultEl = document.getElementById("moodResult");
 
   if (mood && resultEl) {
-    resultEl.textContent = "Today's mood: " + mood;
+    const responses = {
+      happy: "I'm glad you're feeling good today 😊",
+      okay: "Thanks for checking in. I'm here if you want to talk.",
+      stressed: "I'm sorry you're feeling stressed. Maybe chatting could help.",
+      sad: "That sounds tough. Remember you're not alone 💜"
+    };
+    resultEl.textContent = responses[mood] || "";
+    /* Also highlight the previously selected mood button */
+    const btn = document.querySelector(`.mood-buttons button[aria-label="${mood.charAt(0).toUpperCase() + mood.slice(1)}"]`);
+    if (btn) btn.classList.add("mood-selected");
   }
 
   renderTrendChart();
