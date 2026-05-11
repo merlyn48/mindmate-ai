@@ -196,18 +196,40 @@
     function safeParseJSON(v, f) { try { return v ? JSON.parse(v) : f; } catch { return f; } }
 
     const email     = localStorage.getItem("loggedInEmail");
+    const uid       = localStorage.getItem("loggedInUID");
     const user      = email ? safeParseJSON(localStorage.getItem("mindmate_user_" + email), null) : null;
     const name      = user?.name || localStorage.getItem("loggedInUser") || "User";
     const userEmail = user?.email || email || "—";
-    const createdAt = user?.createdAt
-      ? new Date(user.createdAt).toLocaleDateString([], { year:"numeric", month:"long", day:"numeric" })
-      : "Unknown";
 
-    document.getElementById("avatarName").textContent         = name;
-    document.getElementById("avatarEmail").textContent        = userEmail;
+    function formatDate(ts) {
+      return new Date(ts).toLocaleDateString([], { year:"numeric", month:"long", day:"numeric" });
+    }
+
+    document.getElementById("avatarName").textContent          = name;
+    document.getElementById("avatarEmail").textContent         = userEmail;
     document.getElementById("profileNameDisplay").textContent  = name;
     document.getElementById("profileEmailDisplay").textContent = userEmail;
-    document.getElementById("profileMemberSince").textContent  = createdAt;
+
+    if (user?.createdAt) {
+      document.getElementById("profileMemberSince").textContent = formatDate(user.createdAt);
+    } else if (uid && typeof firebase !== "undefined") {
+      // Fallback: fetch from Firestore and cache it
+      firebase.firestore().collection("users").doc(uid).get().then(snap => {
+        if (snap.exists && snap.data().createdAt) {
+          const ts = snap.data().createdAt;
+          document.getElementById("profileMemberSince").textContent = formatDate(ts);
+          // Cache for next time
+          const cached = { name, email: userEmail, createdAt: ts };
+          try { localStorage.setItem("mindmate_user_" + email, JSON.stringify(cached)); } catch {}
+        } else {
+          document.getElementById("profileMemberSince").textContent = "Unknown";
+        }
+      }).catch(() => {
+        document.getElementById("profileMemberSince").textContent = "Unknown";
+      });
+    } else {
+      document.getElementById("profileMemberSince").textContent = "Unknown";
+    }
 
     const avatarEl    = document.getElementById("profileAvatar");
     const savedAvatar = localStorage.getItem("mindmate_avatar_" + (email || ""));
