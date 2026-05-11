@@ -275,8 +275,110 @@
       box-shadow: 0 6px 18px rgba(124,106,247,0.3);
     }
 
-    /* Active nav link */
-    .sidebar a.active {
+    /* ── Mood Picker ── */
+    .mood-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .mood-picker-label {
+      font-size: 13px;
+      color: #6f6a8b;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .mood-picker-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .mood-pick-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: rgba(255,255,255,0.7);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mood-pick-btn:hover {
+      transform: scale(1.12);
+      background: rgba(255,255,255,0.95);
+    }
+    .mood-pick-btn.selected {
+      border-color: #7c6af7;
+      background: rgba(124,106,247,0.1);
+      transform: scale(1.12);
+    }
+
+    /* ── Word count ── */
+    .textarea-wrap { position: relative; }
+    .word-count {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: #b0adc5;
+      pointer-events: none;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Inline Edit ── */
+    .inline-edit-area {
+      width: 100%;
+      min-height: 100px;
+      border: 1.5px solid rgba(124,106,247,0.35);
+      outline: none;
+      resize: vertical;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.75;
+      font-family: inherit;
+      color: #372f4f;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    .inline-edit-actions { display: flex; gap: 8px; }
+    .save-edit-btn {
+      background: linear-gradient(135deg, #7c6af7, #9b8cff);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .save-edit-btn:hover { opacity: 0.88; }
+    .cancel-edit-btn {
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .cancel-edit-btn:hover { background: #e5e7eb; }
+
+    /* ── Entry header ── */
+    .entry-mood {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
       color: var(--c-accent, #7c6af7) !important;
       background: var(--c-accent-soft, rgba(124,110,230,0.08));
       font-weight: 500;
@@ -343,7 +445,22 @@
 
         <p id="dailyPrompt" class="daily-prompt"></p>
 
-        <textarea id="journalInput" class="journal-input" placeholder="Write your thoughts..."></textarea>
+        <div class="mood-picker-row">
+          <span class="mood-picker-label">Today's mood:</span>
+          <div class="mood-picker-btns" id="moodPicker">
+            <button class="mood-pick-btn" data-mood="happy"   title="Happy"   onclick="pickMood('happy',   this)">🙂</button>
+            <button class="mood-pick-btn" data-mood="okay"    title="Okay"    onclick="pickMood('okay',    this)">😐</button>
+            <button class="mood-pick-btn" data-mood="stressed" title="Stressed" onclick="pickMood('stressed',this)">😟</button>
+            <button class="mood-pick-btn" data-mood="sad"     title="Sad"     onclick="pickMood('sad',     this)">😔</button>
+            <button class="mood-pick-btn" data-mood="excited" title="Excited" onclick="pickMood('excited', this)">😄</button>
+            <button class="mood-pick-btn" data-mood="tired"   title="Tired"   onclick="pickMood('tired',   this)">😴</button>
+          </div>
+        </div>
+
+        <div class="textarea-wrap">
+          <textarea id="journalInput" class="journal-input" placeholder="Write your thoughts..."></textarea>
+          <span class="word-count" id="wordCount">0 words</span>
+        </div>
 
         <button class="save-btn" onclick="saveJournal()">Save Entry</button>
 
@@ -414,9 +531,38 @@
 
     loadPrompt();
 
+    /* ── Mood Picker ── */
+    const moodEmojiMap = {
+      happy:   "🙂",
+      okay:    "😐",
+      stressed:"😟",
+      sad:     "😔",
+      excited: "😄",
+      tired:   "😴"
+    };
+
+    function pickMood(mood, btn) {
+      document.querySelectorAll(".mood-pick-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      localStorage.setItem("mindmate_mood", mood);
+      localStorage.setItem("mindmate_mood_emoji", moodEmojiMap[mood]);
+    }
+
+    /* Restore previously selected mood on load */
     window.addEventListener("load", () => {
+      const savedMood = localStorage.getItem("mindmate_mood");
+      if (savedMood) {
+        const btn = document.querySelector(`.mood-pick-btn[data-mood="${savedMood}"]`);
+        if (btn) btn.classList.add("selected");
+      }
       document.getElementById("journalInput").focus();
       loadJournals();
+    });
+
+    /* ── Word count ── */
+    document.getElementById("journalInput").addEventListener("input", function () {
+      const words = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+      document.getElementById("wordCount").textContent = words + (words === 1 ? " word" : " words");
     });
 
     /* ── Save ── */
@@ -426,15 +572,19 @@
       if (!text) { showToast("Write something first ✍️", "error"); return; }
       try {
         const now = new Date();
+        const moodKey   = localStorage.getItem("mindmate_mood") || "okay";
+        const moodEmoji = moodEmojiMap[moodKey] || "🙂";
         await _db.collection("users").doc(uid).collection("journals").add({
           text,
           createdAt: Date.now(),
           date: now.toLocaleDateString("en-CA"),
           time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          mood: localStorage.getItem("mindmate_mood") || "🙂"
+          mood: moodEmoji,
+          moodKey: moodKey
         });
         showToast("Journal saved 💾", "success");
         document.getElementById("journalInput").value = "";
+        document.getElementById("wordCount").textContent = "0 words";
         loadJournals();
       } catch (err) {
         console.error(err);
@@ -461,9 +611,10 @@
           const id = doc.id;
           const card = document.createElement("div");
           card.className = "entry-card";
+          card.dataset.id = id;
           card.innerHTML = `
             <div class="entry-top">
-              <span class="entry-mood">${d.mood || "🙂"}</span>
+              <span class="entry-mood">${d.mood || "🙂"} <span style="font-size:11px;color:#9c99b5;font-weight:500">${d.moodKey || ""}</span></span>
               <span class="entry-date">${d.date} • ${d.time}</span>
             </div>
             <div class="entry-text">${escapeHtml(d.text)}</div>
@@ -510,18 +661,53 @@
       document.getElementById("confirmBox").classList.add("hidden");
     };
 
-    /* ── Edit ── */
+    /* ── Inline Edit ── */
     function editJournal(id, btn) {
-      const card   = btn.closest(".entry-card");
-      const textEl = card.querySelector(".entry-text");
+      const card    = btn.closest(".entry-card");
+      const textEl  = card.querySelector(".entry-text");
+      const actionsEl = card.querySelector(".entry-actions");
       const oldText = textEl.textContent.trim();
-      const newText = prompt("Edit your entry:", oldText);
-      if (!newText || newText.trim() === oldText) return;
-      const uid = localStorage.getItem("loggedInUID");
-      _db.collection("users").doc(uid).collection("journals").doc(id)
-        .update({ text: newText.trim() })
-        .then(() => { showToast("Updated ✨", "success"); loadJournals(); })
-        .catch(err => { console.error(err); showToast("Update failed", "error"); });
+
+      /* Swap text div for a textarea */
+      textEl.style.display = "none";
+      actionsEl.style.display = "none";
+
+      const editArea = document.createElement("textarea");
+      editArea.className = "inline-edit-area";
+      editArea.value = oldText;
+
+      const editActions = document.createElement("div");
+      editActions.className = "inline-edit-actions";
+      editActions.innerHTML = `
+        <button class="save-edit-btn">Save</button>
+        <button class="cancel-edit-btn">Cancel</button>`;
+
+      card.appendChild(editArea);
+      card.appendChild(editActions);
+      editArea.focus();
+
+      editActions.querySelector(".cancel-edit-btn").onclick = () => {
+        card.removeChild(editArea);
+        card.removeChild(editActions);
+        textEl.style.display = "";
+        actionsEl.style.display = "";
+      };
+
+      editActions.querySelector(".save-edit-btn").onclick = () => {
+        const newText = editArea.value.trim();
+        if (!newText || newText === oldText) {
+          card.removeChild(editArea);
+          card.removeChild(editActions);
+          textEl.style.display = "";
+          actionsEl.style.display = "";
+          return;
+        }
+        const uid = localStorage.getItem("loggedInUID");
+        _db.collection("users").doc(uid).collection("journals").doc(id)
+          .update({ text: newText })
+          .then(() => { showToast("Updated ✨", "success"); loadJournals(); })
+          .catch(err => { console.error(err); showToast("Update failed", "error"); });
+      };
     }
   </script>
 
