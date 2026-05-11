@@ -83,11 +83,17 @@ async function login() {
     const user = cred.user;
 
     const snap = await _db.collection("users").doc(user.uid).get();
-    const name = snap.exists ? snap.data().name : (user.displayName || "User");
+    const userData = snap.exists ? snap.data() : {};
+    const name = userData.name || user.displayName || "User";
 
     localStorage.setItem("loggedInUser",  name);
     localStorage.setItem("loggedInEmail", email);
     localStorage.setItem("loggedInUID",   user.uid);
+    localStorage.setItem("mindmate_user_" + email, JSON.stringify({
+      name,
+      email,
+      createdAt: userData.createdAt || null,
+    }));
 
     if (remember) {
       localStorage.setItem("rememberedEmail", email);
