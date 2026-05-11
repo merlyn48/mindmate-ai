@@ -624,17 +624,8 @@
         badge.style.display = "inline-flex";
       }
 
-      /* ── 7. Also update via backend if available (for AI recommendations) ── */
-      if (window.MindMateBackend) {
-        const summary = window.MindMateBackend.MoodTracker.summary();
-        // Sync ring colour with backend's more accurate average if available
-        if (summary.averageWellnessScore !== null && arc && avgEl) {
-          avgEl.textContent             = summary.averageWellnessScore;
-          const s                       = summary.averageWellnessScore;
-          arc.style.strokeDashoffset    = 175.9 - (s / 100) * 175.9;
-          arc.style.stroke              = s >= 60 ? "#22c55e" : s >= 40 ? "#f59e0b" : "#ef4444";
-        }
-      }
+      /* ── 7. No backend override — donut and bars both use the same
+              7-day midnight-aligned daily average so they always match. ── */
     }
 
         /* ── Render recommendation cards ──────────────────── */
