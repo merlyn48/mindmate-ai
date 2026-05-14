@@ -1,12 +1,7 @@
 "use strict";
 
-/* ─────────────────────────────────────────────────────────────────
-   GROQ API CONFIGURATION
-   Get your FREE key at: https://console.groq.com/keys
-   Paste it below — no server/proxy needed for Groq!
-   ───────────────────────────────────────────────────────────────── */
 const GROQ_ENDPOINT = "https://mindmateai.onrender.com/chat";
-const GROQ_MODEL    = "llama-3.3-70b-versatile"; // fast, free, high quality
+const GROQ_MODEL    = "llama-3.3-70b-versatile"; 
 
 const _AI_HEADERS = {
   "Content-Type": "application/json",
@@ -589,7 +584,7 @@ window.MindMateBackend = {
 
 function _override() {
   window.getAIReply = getAIReplyAI;
-  console.info("[MindMate AI v2.1] ✅ Active — Groq LLaMA 3.3 70B + RAG Memory + Mood Tracking.");
+  console.info("[MindMate AI v2.1]  Active — Groq LLaMA 3.3 70B + RAG Memory + Mood Tracking.");
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", _override);
